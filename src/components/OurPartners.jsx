@@ -56,7 +56,7 @@ export const OurPartners = () => {
             <div className="flex justify-center text-4xl font-bold mb-4">
                 <span className="text-white">Our</span> <span className="pl-2 text-teal-200">Partners</span>
             </div>
-            <div className="flex justify-center px-24 py-6 text-lg text-white text-center">
+            <div className="flex justify-center px:8 lg:px-24 py-6 text-lg text-white text-center">
                 <p>
                     We have partnered with some of the <span className="font-bold">best hospitals and clinics</span> across the country to provide quality healthcare services to our members. Our partner hospitals and clinics are carefully selected based on their <span className="font-bold">reputation for quality care, advanced technology,</span> and <span className="font-bold">experienced medical staff</span>.
                 </p>
