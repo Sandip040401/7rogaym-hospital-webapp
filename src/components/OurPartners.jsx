@@ -61,7 +61,7 @@ export const OurPartners = () => {
                     We have partnered with some of the <span className="font-bold">best hospitals and clinics</span> across the country to provide quality healthcare services to our members. Our partner hospitals and clinics are carefully selected based on their <span className="font-bold">reputation for quality care, advanced technology,</span> and <span className="font-bold">experienced medical staff</span>.
                 </p>
             </div>
-            <div className="px-10 mt-12 md:px-12 relative">
+            <div className="ml-4 px-10 mt-12 md:px-12 relative">
                 <Swiper
                     modules={[Navigation, Pagination, Autoplay]}
                     loop={true}

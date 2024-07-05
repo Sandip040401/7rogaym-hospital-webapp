@@ -29,12 +29,12 @@ export const Banner = () => {
     ];
     
     return (
-        <div className="h-full w-full mt-24 md:mt-36 px-6 md:px-36">
+        <div className="h-full w-full mt-36 md:mt-36 px-6 md:px-36">
             <div className="flex flex-col md:flex-row">
                 <div className="flex flex-col justify-center md:items-start">
                     <div className="font-light text-4xl md:text-6xl">Healthcare that</div>
                     <div className="font-semibold text-4xl md:text-6xl mt-4">treats you right</div>
-                    <div className="mt-6">
+                    <div className="lg:mt-6 mt-16">
                         <a href="https://docs.google.com/forms/d/e/1FAIpQLSfwJAwVYuB0aW5Wiyfrc5uoayvlw6OxRyVOlhgpeGbYyvRU2A/viewform"><button type="button" className="h-12 w-full md:w-48 flex items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-m px-5 py-2.5 text-center mb-2">
                             Check Prices
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 ml-2">
@@ -43,11 +43,11 @@ export const Banner = () => {
                         </button></a>
                     </div>
                 </div>
-                <div className="flex justify-center md:pl-96 shadow-sm mt-8 md:mt-0">
+                <div className="flex justify-center md:pl-96 shadow-sm mt-12 lg:mt-8 md:mt-0">
                     <img src="/healthcard.png" className="transform transition-transform duration-300 hover:rotate-3 hover:scale-105" alt="Health Card" />
                 </div>
             </div>
-            <div className="mt-10 md:mt-20">
+            <div className="mt-2 md:mt-20">
                 <BannerCards data={servicesData} />
             </div>
         </div>
