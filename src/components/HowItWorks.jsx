@@ -1,4 +1,6 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserPlus, faIdCard, faHospital } from '@fortawesome/free-solid-svg-icons';
 
 export const HowitWorks = () => {
     return (
@@ -11,7 +13,7 @@ export const HowitWorks = () => {
             <div className="container mx-auto pt-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                     <div className="flex justify-center md:justify-end items-center">
-                        <img src="path/to/your/image1.jpg" alt="Step 1" className="w-3/4 rounded-lg shadow-lg" />
+                        <FontAwesomeIcon icon={faUserPlus} size="6x" className="text-emerald-600 mr-8" />
                     </div>
                     <div className="flex justify-center md:justify-start items-center text-lg">
                         <p className="bg-white p-6 rounded-lg shadow-lg">
@@ -26,12 +28,12 @@ export const HowitWorks = () => {
                         </p>
                     </div>
                     <div className="order-1 md:order-2 flex justify-center md:justify-start items-center">
-                        <img src="path/to/your/image2.jpg" alt="Step 2" className="w-3/4 rounded-lg shadow-lg" />
+                        <FontAwesomeIcon icon={faIdCard} size="6x" className="text-emerald-600 ml-8" />
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                     <div className="flex justify-center md:justify-end items-center">
-                        <img src="path/to/your/image3.jpg" alt="Step 3" className="w-3/4 rounded-lg shadow-lg" />
+                        <FontAwesomeIcon icon={faHospital} size="6x" className="text-emerald-600 mr-8" />
                     </div>
                     <div className="flex justify-center md:justify-start items-center text-lg">
                         <p className="bg-white p-6 rounded-lg shadow-lg">
@@ -42,4 +44,4 @@ export const HowitWorks = () => {
             </div>
         </div>
     );
-}
+};

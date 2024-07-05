@@ -10,38 +10,34 @@ export const Services = () => {
 
     const servicesData1 = [
         {
-            imageSrc: "https://img.icons8.com/external-outline-icons-maxicons/64/external-books-education-outline-icons-maxicons.png",
-            title: "Education",
-            description: "Discounts on online courses",
+            imageSrc: "https://img.icons8.com/external-others-pike-picture/50/external-Heart-Surgery-surgery-others-pike-picture.png",
+            title: "Heart Diseases",
+            description: "Comprehensive care for heart conditions, including diagnostics, treatment, and rehabilitation.",
             color: "bg-purple-100 hover:bg-purple-200",
-            circle: "bg-green-400",
             textSize: "text-2xl",
             descSize: "text-md"
         },
         {
-            imageSrc: "https://img.icons8.com/external-kiranshastry-lineal-kiranshastry/64/external-travel-travel-kiranshastry-lineal-kiranshastry.png",
-            title: "Travel",
-            description: "Exclusive travel deals",
+            imageSrc: "https://img.icons8.com/arcade/64/surgery.png",
+            title: "General Surgery",
+            description: "Expert surgical procedures covering a wide range of medical conditions with advanced techniques.",
             color: "bg-red-100 hover:bg-red-200",
-            circle: "bg-green-400",
             textSize: "text-2xl",
             descSize: "text-md"
         },
         {
-            imageSrc: "https://img.icons8.com/external-flat-juicy-fish/64/external-food-food-and-drink-flat-flat-juicy-fish.png",
-            title: "Food",
-            description: "Discounts at top restaurants",
+            imageSrc: "https://img.icons8.com/pulsar-color/48/tooth-protection.png",
+            title: "Dental Problems",
+            description: "Advanced dental treatments including preventive, restorative, and cosmetic dentistry.",
             color: "bg-orange-100 hover:bg-orange-200",
-            circle: "bg-green-400",
             textSize: "text-2xl",
             descSize: "text-md"
         },
         {
-            imageSrc: "https://img.icons8.com/external-flat-juicy-fish/64/external-food-food-and-drink-flat-flat-juicy-fish.png",
-            title: "Food",
-            description: "Discounts at top restaurants",
-            color: "bg-orange-100 hover:bg-orange-200",
-            circle: "bg-green-400",
+            imageSrc: "https://img.icons8.com/external-inipagistudio-mixed-inipagistudio/64/external-diagnostic-antibody-testing-inipagistudio-mixed-inipagistudio.png",
+            title: "Diagnostic",
+            description: "Accurate diagnostic services with state-of-the-art equipment for early detection and treatment.",
+            color: "bg-yellow-100 hover:bg-yellow-200",
             textSize: "text-2xl",
             descSize: "text-md"
         }
@@ -49,49 +45,41 @@ export const Services = () => {
 
     const servicesData2 = [
         {
-            imageSrc: "https://img.icons8.com/external-flatart-icons-lineal-color-flatarticons/64/external-medicines-health-and-medical-flatart-icons-lineal-color-flatarticons.png",
-            title: "Medicines",
-            description: "Up to 20% discount on Medicines",
-            color: "bg-yellow-100 hover:bg-yellow-200",
-            circle: "bg-green-400",
-            textSize: "text-2xl",
-            descSize: "text-md"
-
-        },
-        {
-            imageSrc: "https://img.icons8.com/external-flat-juicy-fish/64/external-food-food-and-drink-flat-flat-juicy-fish.png",
-            title: "Pharmacy",
-            description: "Up to 25% discount on Pharmacy",
+            imageSrc: "https://img.icons8.com/color/96/pill.png",
+            title: "Medicine",
+            description: "Wide range of medicines available for various health conditions, ensuring quality and affordability.",
             color: "bg-blue-100 hover:bg-blue-200",
-            circle: "bg-green-400",
             textSize: "text-2xl",
             descSize: "text-md"
-
         },
         {
-            imageSrc: "https://img.icons8.com/external-flat-juicy-fish/64/external-food-food-and-drink-flat-flat-juicy-fish.png",
-            title: "Health",
-            description: "Free health check-ups",
+            imageSrc: "https://img.icons8.com/external-beshi-color-kerismaker/48/external-Neurology-medical-service-beshi-color-kerismaker.png",
+            title: "Neurology",
+            description: "Specialized neurological care for conditions affecting the brain, spinal cord, and nerves.",
             color: "bg-green-100 hover:bg-green-200",
-            circle: "bg-green-400",
             textSize: "text-2xl",
             descSize: "text-md"
-
         },
         {
-            imageSrc: "https://img.icons8.com/external-flat-juicy-fish/64/external-food-food-and-drink-flat-flat-juicy-fish.png",
-            title: "Support",
-            description: "24/7 Support",
+            imageSrc: "https://img.icons8.com/external-xnimrodx-lineal-color-xnimrodx/64/external-eye-care-hospital-and-healthcare-xnimrodx-lineal-color-xnimrodx.png",
+            title: "Eye Care",
+            description: "Comprehensive eye care services including vision tests, treatments, and surgeries.",
             color: "bg-pink-100 hover:bg-pink-200",
-            circle: "bg-green-400",
             textSize: "text-2xl",
             descSize: "text-md"
-
+        },
+        {
+            imageSrc: "https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-bones-anatomy-flaticons-lineal-color-flat-icons-3.png",
+            title: "Orthopaedics",
+            description: "Advanced orthopaedic treatments for bone, joint, and muscle conditions, including surgeries and rehabilitation.",
+            color: "bg-purple-100 hover:bg-purple-200",
+            textSize: "text-2xl",
+            descSize: "text-md"
         }
     ];
 
     return (
-        <div className="h-full w-full mt-10 bg-cyan-700 py-6 pb-14">
+        <div className="h-full w-full mt-10 bg-cyan-700 py-6 pb-14 rounded-t-3xl" id="services">
             <div className="flex justify-center text-3xl font-bold text-white">
                 <span className="flex flex-col justify-center">The</span>
                 <span className="text-teal-200 text-4xl pl-2">Services</span>

@@ -13,7 +13,7 @@ export const Hospitals = () => {
                     const transformedData = response.data.data
                         .filter(hospital => hospital.status === "ENABLE")
                         .map(hospital => ({
-                            image: hospital.images[0] || '', // Assuming the first image is the main one
+                            image: hospital.images[0] || '/hospital.png', // Assuming the first image is the main one
                             name: hospital.entity_name,
                             address: hospital.address,
                             city: hospital.city,
@@ -25,7 +25,10 @@ export const Hospitals = () => {
                                 opd: hospital.discount_opd,
                                 medicine: hospital.discount_medicine,
                                 diagnostic: hospital.discount_diagnostic
-                            }
+                            },
+                            category: hospital.category,
+                            uid: hospital.uid,
+                            map_link: hospital.map_link
                         }));
                     setHospitals(transformedData);
                 }
@@ -38,7 +41,7 @@ export const Hospitals = () => {
     }, []);
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center h-full w-full mt-36 px-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center h-full w-full mt-28 px-20 pb-20">
             {hospitals.map((hospital, index) => (
                 <HospitalCard key={index} hospital={hospital} />
             ))}

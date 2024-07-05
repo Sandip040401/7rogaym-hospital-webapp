@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
@@ -13,6 +13,8 @@ import { HospitalCard } from './HospitalCard';
 
 export const OurPartners = () => {
     const [hospitals, setHospitals] = useState([]);
+    const prevRef = useRef(null);
+    const nextRef = useRef(null);
 
     useEffect(() => {
         const fetchHospitals = async () => {
@@ -22,7 +24,7 @@ export const OurPartners = () => {
                     const transformedData = response.data.data
                         .filter(hospital => hospital.status === "ENABLE")
                         .map(hospital => ({
-                            image: hospital.images[0] || '', // Assuming the first image is the main one
+                            image: hospital.images[0] || '/hospital.png', // Assuming the first image is the main one
                             name: hospital.entity_name,
                             address: hospital.address,
                             city: hospital.city,
@@ -34,7 +36,10 @@ export const OurPartners = () => {
                                 opd: hospital.discount_opd,
                                 medicine: hospital.discount_medicine,
                                 diagnostic: hospital.discount_diagnostic
-                            }
+                            },
+                            category: hospital.category,
+                            uid: hospital.uid,
+                            map_link: hospital.map_link
                         }));
                     setHospitals(transformedData);
                 }
@@ -60,19 +65,26 @@ export const OurPartners = () => {
                 <Swiper
                     modules={[Navigation, Pagination, Autoplay]}
                     loop={true}
+                    speed={600}
                     pagination={{ clickable: true }}
                     centeredSlides={true}
                     grabCursor={true}
                     slidesPerView={3}
                     spaceBetween={30}
                     autoplay={{ delay: 1000, disableOnInteraction: false }}
-                    navigation={{ nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }}
+                    navigation={{ prevEl: prevRef.current, nextEl: nextRef.current }}
+                    onInit={(swiper) => {
+                        swiper.params.navigation.prevEl = prevRef.current;
+                        swiper.params.navigation.nextEl = nextRef.current;
+                        swiper.navigation.init();
+                        swiper.navigation.update();
+                    }}
                     breakpoints={{
-                        640: {
+                        320: {
                             slidesPerView: 1,
                             spaceBetween: 10,
                         },
-                        768: {
+                        640: {
                             slidesPerView: 2,
                             spaceBetween: 20,
                         },
@@ -88,8 +100,8 @@ export const OurPartners = () => {
                         </SwiperSlide>
                     ))}
                 </Swiper>
-                <div className="swiper-button-prev text-white"></div>
-                <div className="swiper-button-next text-white"></div>
+                <div ref={prevRef} className="custom-swiper-button-prev swiper-button-prev text-white"></div>
+                <div ref={nextRef} className="custom-swiper-button-next swiper-button-next text-white"></div>
             </div>
             <div className="flex justify-center mt-6">
                 <Link to="/hospitals">
