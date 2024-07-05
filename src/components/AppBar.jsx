@@ -22,7 +22,7 @@ export const AppBar = () => {
             <Link to="/">
                 <div className="flex items-center">
                     <img className="h-10" src="/logo1.jpg" alt="Logo 1" />
-                    <img className="h-10 ml-4" src="/logo2.png" alt="Logo 2" />
+                    <img className="h-10" src="/logo2.png" alt="Logo 2" />
                 </div>
             </Link>
             <div className="hidden md:flex space-x-6">
