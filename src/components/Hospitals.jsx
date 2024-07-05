@@ -41,7 +41,7 @@ export const Hospitals = () => {
     }, []);
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center h-full w-full mt-28 px-20 pb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center h-full w-full mt-28 px-10 lg:px-20 pb-20">
             {hospitals.map((hospital, index) => (
                 <HospitalCard key={index} hospital={hospital} />
             ))}
