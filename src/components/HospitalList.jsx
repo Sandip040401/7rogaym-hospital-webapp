@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { HospitalCard } from "./HospitalCard";
+import { HospitalCard } from './HospitalCard';
 
-export const Hospitals = () => {
+const HospitalList = () => {
     const [hospitals, setHospitals] = useState([]);
 
     useEffect(() => {
@@ -38,10 +38,12 @@ export const Hospitals = () => {
     }, []);
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center h-full w-full mt-36 px-20">
+        <div className="hospital-list">
             {hospitals.map((hospital, index) => (
                 <HospitalCard key={index} hospital={hospital} />
             ))}
         </div>
     );
 };
+
+export default HospitalList;
