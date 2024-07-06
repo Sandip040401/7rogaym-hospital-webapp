@@ -79,7 +79,7 @@ export const Services = () => {
     ];
 
     return (
-        <div className="h-full w-full mt-10 bg-cyan-700 py-6 pb-14 rounded-t-3xl" id="services">
+        <div className="h-full w-full bg-cyan-700 py-6 pb-14" id="services">
             <div className="flex justify-center text-3xl font-bold text-white">
                 <span className="flex flex-col justify-center">The</span>
                 <span className="text-teal-200 text-4xl pl-2">Services</span>
