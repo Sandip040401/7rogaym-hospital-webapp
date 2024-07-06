@@ -79,11 +79,11 @@ export const Services = () => {
     ];
 
     return (
-        <div className="h-full w-full bg-cyan-700 py-6 pb-14" id="services">
+        <div className="h-full w-full py-6 px-4 pb-14 lg:bg-[url('/services.jpg')] bg-no-repeat bg-contain" id="services">
             <div className="flex justify-center text-3xl font-bold text-white">
-                <span className="flex flex-col justify-center">The</span>
-                <span className="text-teal-200 text-4xl pl-2">Services</span>
-                <span className="flex flex-col justify-center pl-2">We Provide</span> 
+                <span className="flex flex-col text-black justify-center">The</span>
+                <span className="text-teal-500 text-4xl pl-2">Services</span>
+                <span className="flex flex-col text-black justify-center pl-2">We Provide</span> 
             </div>
             <div className="flex justify-center px-48">
                 <BannerCards data={servicesData1} height="h-80" width="w-64" feature={true} />
