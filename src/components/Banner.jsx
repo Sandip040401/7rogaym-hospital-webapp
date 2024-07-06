@@ -43,7 +43,7 @@ export const Banner = () => {
                         </button></a>
                     </div>
                 </div>
-                <div className="flex justify-center md:pl-96 shadow-sm mt-12 lg:mt-8 md:mt-0">
+                <div className="flex justify-center md:pl-96  mt-12 lg:mt-8 md:mt-0">
                     <img src="/healthcard.png" className="transform transition-transform duration-300 hover:rotate-3 hover:scale-105" alt="Health Card" />
                 </div>
             </div>
