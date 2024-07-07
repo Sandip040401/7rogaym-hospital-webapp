@@ -5,7 +5,7 @@ export default function Policy() {
     return (
         <>
             <AppBar />
-            <div className="px-48 pb-20 pt-36 bg-gradient-to-r from-green-300 via-blue-300 to-purple-300 min-h-screen flex items-center justify-center">
+            <div className="px-12 lg:px-48 pb-20 pt-36 bg-gradient-to-r from-green-300 via-blue-300 to-purple-300 min-h-screen flex items-center justify-center">
                 <div className="bg-white p-10 rounded-xl shadow-2xl ">
                     <h1 className="text-3xl font-bold mb-6 text-gray-800 text-center">Privacy Policy</h1>
                     <p className="mb-4 text-gray-600">
