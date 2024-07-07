@@ -13,6 +13,11 @@ export const Footer = () => {
                         <p className="mb-2">GST: 23AACCZ1326M1ZB</p>
                         <p className="mb-2">Gx 14, Varun Nagar, Kolar Road, Bhopal, Madhya Pradesh 462042</p>
                         <p className="mb-4">All Rights Reserved. With Love by 7R <span role="img" aria-label="Indian Flag">🇮🇳</span></p>
+                        <div className="mt-4">
+                            <Link to="/tnc" className="text-yellow-500 hover:text-white mr-4">Terms & Conditions</Link>
+                            <Link to="/privacy-policy" className="text-yellow-500 hover:text-white mr-4">Privacy Policy</Link>
+                            <Link to="/refund" className="text-yellow-500 hover:text-white">Refund & Cancellation</Link>
+                        </div>
                     </div>
 
                     {/* Contact Us */}
@@ -21,7 +26,7 @@ export const Footer = () => {
                         <p className="mb-2">Have questions or need assistance?</p>
                         <p className="mb-2">
                             Our customer support team is available to assist you with any queries you may have.
-                           <br /> You can reach us by phone, email, or chat. We look forward to hearing from you!
+                            <br /> You can reach us by phone, email, or chat. We look forward to hearing from you!
                         </p>
                         <p className="mb-2">Phone: <a href="tel:9201989710" className="text-yellow-500">9201989710</a></p>
                         <p className="mb-2">Email: <a href="mailto:Contact@7Rogyam.com" className="text-yellow-500">Contact@7Rogyam.com</a></p>

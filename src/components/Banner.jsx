@@ -29,7 +29,7 @@ export const Banner = () => {
     ];
     
     return (
-        <div className="bg-[url('/background.jpg')] bg-no-repeat bg-cover pb-10 h-full w-full pt-10 mt-14 md:mt-24 px-6 md:px-36">
+        <div className="bg-[url('/background.jpg')] bg-no-repeat bg-cover pb-10 h-full w-full pt-10 mt-14 md:mt-20 px-6 md:px-36">
             <div className="flex flex-col md:flex-row">
                 <div className="flex flex-col justify-center md:items-start">
                     <div className="font-normal text-4xl md:text-5xl">Healthcare that</div>
