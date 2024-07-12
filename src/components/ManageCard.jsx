@@ -32,6 +32,10 @@ const ManageCard = () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/users`, {
           params: { email: userEmail }
+        }, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
         });
         setPlanDetails({
           planName: response.data.selectedPlan,
@@ -53,6 +57,10 @@ const ManageCard = () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/members`, {
           params: { email: userEmail }
+        }, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
         });
         setMembers(response.data);
       } catch (error) {
@@ -81,7 +89,11 @@ const ManageCard = () => {
       const decodedToken = JSON.parse(tokenString);
       const userEmail = decodedToken.email;
 
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/members`, { ...formData, email: userEmail });
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/members`, { ...formData, email: userEmail }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
       setMembers([...members, response.data]);
       setFormData({
         name: '',
@@ -114,7 +126,11 @@ const ManageCard = () => {
 
   const handleSaveEdit = async (index) => {
     try {
-      const response = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/members/${editingFormData._id}`, editingFormData);
+      const response = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/members/${editingFormData._id}`, editingFormData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
       const updatedMembers = [...members];
       updatedMembers[index] = response.data;
       setMembers(updatedMembers);

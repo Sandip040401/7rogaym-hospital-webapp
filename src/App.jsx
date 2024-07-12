@@ -11,10 +11,10 @@ import Plans from './pages/Plans';
 import Payment from './components/Payment';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Admin from './pages/Admin';
 import AdminLogin from './pages/AdminLogin';
 import { AuthProvider } from './AuthContext';
 import ProtectedRoute, { SubscriptionProtectedRoute } from './ProtectedRoute';
+import Admin from './pages/Admin';
 
 export default function App() {
     return (
@@ -42,9 +42,9 @@ export default function App() {
                     <Route
                         path="/admin-dashboard"
                         element={
-                            <ProtectedRoute>
+                            // <ProtectedRoute>
                                 <Admin />
-                            </ProtectedRoute>
+                            // </ProtectedRoute>
                         }
                     />
                 </Routes>
