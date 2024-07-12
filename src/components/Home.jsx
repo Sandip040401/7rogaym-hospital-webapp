@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Home = () => {
   const [userData, setUserData] = useState({
@@ -43,6 +45,7 @@ const Home = () => {
         });
       } catch (error) {
         console.error('Error fetching user data', error);
+        toast.error('Error fetching user data');
       }
     };
 
@@ -67,11 +70,11 @@ const Home = () => {
       });
       if (response.status === 200) {
         setIsUpdated(false);
-        alert('User data updated successfully');
+        toast.success('User data updated successfully');
       }
     } catch (error) {
       console.error('Error updating user data', error);
-      alert('Failed to update user data');
+      toast.error('Failed to update user data');
     }
   };
 
@@ -124,6 +127,7 @@ const Home = () => {
           </button>
         )}
       </form>
+      <ToastContainer/>
     </div>
   );
 };
