@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ManageCard = () => {
   const [formData, setFormData] = useState({
@@ -71,7 +73,15 @@ const ManageCard = () => {
 
   const handleAddMember = async () => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/members`, formData);
+      const tokenString = localStorage.getItem('token');
+      if (!tokenString) {
+        console.error('No token found');
+        return;
+      }
+      const decodedToken = JSON.parse(tokenString);
+      const userEmail = decodedToken.email;
+
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/members`, { ...formData, email: userEmail });
       setMembers([...members, response.data]);
       setFormData({
         name: '',
@@ -83,8 +93,10 @@ const ManageCard = () => {
         preExistingIllness: '',
         abhaId: ''
       });
+      toast.success('Member added successfully');
     } catch (error) {
       console.error('Error adding member:', error);
+      toast.error('Failed to add member');
     }
   };
 
@@ -108,8 +120,22 @@ const ManageCard = () => {
       setMembers(updatedMembers);
       setEditingIndex(null);
       setEditingFormData(null);
+      toast.success('Member updated successfully');
     } catch (error) {
       console.error('Error saving edited member:', error);
+      toast.error('Failed to update member');
+    }
+  };
+
+  const handleDelete = async (memberId) => {
+    try {
+      await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/members/${memberId}`);
+      const updatedMembers = members.filter(member => member._id !== memberId);
+      setMembers(updatedMembers);
+      toast.success('Member deleted successfully');
+    } catch (error) {
+      console.error('Error deleting member:', error);
+      toast.error('Failed to delete member');
     }
   };
 
@@ -218,12 +244,12 @@ const ManageCard = () => {
                 <th className="py-2 px-4 border-b">Allergies</th>
                 <th className="py-2 px-4 border-b">Pre-existing Illness</th>
                 <th className="py-2 px-4 border-b">ABHA ID</th>
-                <th className="py-2 px-4 border-b">Edit</th>
+                <th className="py-2 px-4 border-b">Actions</th>
               </tr>
             </thead>
             <tbody>
               {members.map((member, index) => (
-                <tr key={index}>
+                <tr key={member._id}>
                   <td className="py-2 px-4 border-b">
                     {editingIndex === index ? (
                       <input
@@ -330,22 +356,41 @@ const ManageCard = () => {
                   </td>
                   <td className="py-2 px-4 border-b">
                     {editingIndex === index ? (
-                      <button
-                        type="button"
-                        onClick={() => handleSaveEdit(index)}
-                        className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
-                      >
-                        Save
-                      </button>
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => handleSaveEdit(index)}
+                          className="text-green-600 hover:text-green-700 mr-2"
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingIndex(null);
+                            setEditingFormData(null);
+                          }}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          Cancel
+                        </button>
+                      </>
                     ) : (
                       <button
                         type="button"
                         onClick={() => handleEditClick(index)}
-                        className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+                        className="text-blue-600 hover:text-blue-700 mr-2"
                       >
                         Edit
                       </button>
                     )}
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(member._id)}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -353,6 +398,7 @@ const ManageCard = () => {
           </table>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

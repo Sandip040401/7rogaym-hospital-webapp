@@ -72,7 +72,7 @@ const Payment = ({ setSubscriptionStatus }) => {
           
           const result = await axios.post(`${backendUrl}/api/payment/verify-payment`, paymentData);
           if (result.data.status === 'success') {
-            toast.success('Payment Successful');
+            toast.success('Payment Successful please go to the home page to access the dashboard');
             setSubscriptionStatus('active');
             navigate('/'); // Redirect to home page
           } else {
