@@ -15,6 +15,7 @@ import AdminLogin from './pages/AdminLogin';
 import { AuthProvider } from './AuthContext';
 import ProtectedRoute, { SubscriptionProtectedRoute } from './ProtectedRoute';
 import Admin from './pages/Admin';
+import { Card } from './pages/Card';
 
 export default function App() {
     return (
@@ -37,6 +38,7 @@ export default function App() {
                         }
                     />
                     <Route path="/plans" element={<Plans />} />
+                    <Route path="/card" element={<Card />} />
                     <Route path="/payment" element={<Payment />} />
                     <Route path="/admin" element={<AdminLogin />} />
                     <Route

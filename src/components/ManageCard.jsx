@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import 'react-toastify/dist/ReactToastify.css';
+import HealthCard from './HealthCard';
 
 const ManageCard = () => {
   const [formData, setFormData] = useState({
@@ -12,7 +15,8 @@ const ManageCard = () => {
     bloodGroup: '',
     allergies: '',
     preExistingIllness: '',
-    abhaId: ''
+    abhaId: '',
+    photo: null
   });
 
   const [members, setMembers] = useState([]);
@@ -26,7 +30,8 @@ const ManageCard = () => {
     bloodGroup: '',
     allergies: '',
     preExistingIllness: '',
-    abhaId: ''
+    abhaId: '',
+    photo: null
   });
 
   useEffect(() => {
@@ -80,13 +85,18 @@ const ManageCard = () => {
   }, []);
 
   const handleFormChange = (e) => {
+    const { name, value, files } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: name === 'photo' ? files[0] : value
     });
   };
 
   const handleAddMember = async () => {
+    const formDataWithPhoto = new FormData();
+    for (const key in formData) {
+      formDataWithPhoto.append(key, formData[key]);
+    }
     try {
       const tokenString = localStorage.getItem('token');
       if (!tokenString) {
@@ -95,15 +105,14 @@ const ManageCard = () => {
       }
       const decodedToken = JSON.parse(tokenString);
       const userEmail = decodedToken.email;
+      formDataWithPhoto.append('email', userEmail);
 
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/members`, 
-        { ...formData, email: userEmail },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/members`, formDataWithPhoto, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'multipart/form-data'
         }
-      );
+      });
       setMembers([...members, response.data]);
       setFormData({
         name: '',
@@ -113,7 +122,8 @@ const ManageCard = () => {
         bloodGroup: '',
         allergies: '',
         preExistingIllness: '',
-        abhaId: ''
+        abhaId: '',
+        photo: null
       });
       toast.success('Member added successfully');
     } catch (error) {
@@ -128,22 +138,25 @@ const ManageCard = () => {
   };
 
   const handleEditChange = (e) => {
+    const { name, value, files } = e.target;
     setEditingFormData({
       ...editingFormData,
-      [e.target.name]: e.target.value
+      [name]: name === 'photo' ? files[0] : value
     });
   };
 
   const handleSaveEdit = async () => {
+    const formDataWithPhoto = new FormData();
+    for (const key in editingFormData) {
+      formDataWithPhoto.append(key, editingFormData[key]);
+    }
     try {
-      const response = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/members/${editingFormData._id}`, 
-        editingFormData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
+      const response = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/members/${editingFormData._id}`, formDataWithPhoto, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'multipart/form-data'
         }
-      );
+      });
       const updatedMembers = [...members];
       updatedMembers[editingIndex] = response.data;
       setMembers(updatedMembers);
@@ -156,7 +169,8 @@ const ManageCard = () => {
         bloodGroup: '',
         allergies: '',
         preExistingIllness: '',
-        abhaId: ''
+        abhaId: '',
+        photo: null
       });
       toast.success('Member updated successfully');
     } catch (error) {
@@ -181,6 +195,26 @@ const ManageCard = () => {
     }
   };
 
+  const handleDownloadCard = async (member) => {
+    const cardElement = document.getElementById(`card-${member._id}`);
+    const scale = 6;
+    const canvas = await html2canvas(cardElement, {
+      scale: scale,
+      useCORS: true,
+      allowTaint: true,
+    });
+    const imgData = canvas.toDataURL('image/png');
+    const imgWidth = canvas.width / scale;
+    const imgHeight = canvas.height / scale;
+    const pdf = new jsPDF({
+      orientation: 'landscape',
+      unit: 'pt',
+      format: [imgWidth, imgHeight]
+    });
+    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
+    pdf.save(`${member.name}_card.pdf`);
+  };
+
   const planMemberLimits = {
     'Solo Lite': 1,
     'Solo': 1,
@@ -196,252 +230,190 @@ const ManageCard = () => {
     <div className="p-6 bg-gray-100 min-h-screen flex flex-col items-center">
       <div className="bg-white shadow-lg rounded-lg p-8 mb-6 w-full max-w-5xl">
         <h2 className="text-2xl font-bold mb-4">Selected Plan</h2>
-        <p className="text-lg text-gray-700 mb-4">{planDetails.planName} <span className="text-green-600">₹{planDetails.amount}</span></p>
-        <h3 className="text-lg font-medium mb-4">Members Added: {members.length}/{maxMembers}</h3>
+        <p className="text-lg text-gray-700 mb-4">Plan Name: {planDetails.planName}</p>
+        <p className="text-lg text-gray-700 mb-4">Amount: ${planDetails.amount}</p>
+      </div>
 
-        <form className="space-y-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={formData.name}
-            onChange={handleFormChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
-            required
-          />
-          <input
-            type="text"
-            name="emergencyNumber"
-            placeholder="Emergency Number"
-            value={formData.emergencyNumber}
-            onChange={handleFormChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
-            required
-          />
-          <input
-            type="number"
-            name="age"
-            placeholder="Age"
-            value={formData.age}
-            onChange={handleFormChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
-            required
-          />
-          <input
-            type="text"
-            name="relation"
-            placeholder="Relation"
-            value={formData.relation}
-            onChange={handleFormChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
-            required
-          />
-          <input
-            type="text"
-            name="bloodGroup"
-            placeholder="Blood Group"
-            value={formData.bloodGroup}
-            onChange={handleFormChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
-            required
-          />
-          <input
-            type="text"
-            name="allergies"
-            placeholder="Allergies"
-            value={formData.allergies}
-            onChange={handleFormChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
-            required
-          />
-          <input
-            type="text"
-            name="preExistingIllness"
-            placeholder="Pre-existing Illness"
-            value={formData.preExistingIllness}
-            onChange={handleFormChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
-            required
-          />
-          <input
-            type="text"
-            name="abhaId"
-            placeholder="ABHA ID"
-            value={formData.abhaId}
-            onChange={handleFormChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
-            required
-          />
-          <button
-            type="button"
-            onClick={handleAddMember}
-            className="mt-4 w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors"
-          >
+      {members.length < maxMembers && (
+        <div className="bg-white shadow-lg rounded-lg p-8 mb-6 w-full max-w-5xl">
+          <h2 className="text-2xl font-bold mb-4">Add Family Member</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleFormChange}
+              placeholder="Name"
+              className="border p-2 rounded"
+            />
+            <input
+              type="text"
+              name="emergencyNumber"
+              value={formData.emergencyNumber}
+              onChange={handleFormChange}
+              placeholder="Emergency Number"
+              className="border p-2 rounded"
+            />
+            <input
+              type="number"
+              name="age"
+              value={formData.age}
+              onChange={handleFormChange}
+              placeholder="Age"
+              className="border p-2 rounded"
+            />
+            <input
+              type="text"
+              name="relation"
+              value={formData.relation}
+              onChange={handleFormChange}
+              placeholder="Relation"
+              className="border p-2 rounded"
+            />
+            <input
+              type="text"
+              name="bloodGroup"
+              value={formData.bloodGroup}
+              onChange={handleFormChange}
+              placeholder="Blood Group"
+              className="border p-2 rounded"
+            />
+            <input
+              type="text"
+              name="allergies"
+              value={formData.allergies}
+              onChange={handleFormChange}
+              placeholder="Allergies"
+              className="border p-2 rounded"
+            />
+            <input
+              type="text"
+              name="preExistingIllness"
+              value={formData.preExistingIllness}
+              onChange={handleFormChange}
+              placeholder="Pre-existing Illness"
+              className="border p-2 rounded"
+            />
+            <input
+              type="text"
+              name="abhaId"
+              value={formData.abhaId}
+              onChange={handleFormChange}
+              placeholder="ABHA ID"
+              className="border p-2 rounded"
+            />
+            <input
+              type="file"
+              name="photo"
+              accept="image/*"
+              onChange={handleFormChange}
+              className="border p-2 rounded"
+            />
+          </div>
+          <button onClick={handleAddMember} className="bg-blue-500 text-white px-4 py-2 rounded mt-4">
             Add Member
           </button>
-        </form>
+        </div>
+      )}
 
-        <h3 className="text-xl font-bold mt-8 mb-4">Members List</h3>
-        <table className="w-full table-auto bg-white rounded-lg shadow-lg">
-          <thead>
-            <tr className="bg-gray-200 text-gray-700 text-left">
-              <th className="p-3">Name</th>
-              <th className="p-3">Emergency Number</th>
-              <th className="p-3">Age</th>
-              <th className="p-3">Relation</th>
-              <th className="p-3">Blood Group</th>
-              <th className="p-3">Allergies</th>
-              <th className="p-3">Pre-existing Illness</th>
-              <th className="p-3">ABHA ID</th>
-              <th className="p-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {members.map((member, index) => (
-              <tr key={member._id} className="border-b border-gray-300">
-                <td className="p-3">
-                  {editingIndex === index ? (
-                    <input
-                      type="text"
-                      name="name"
-                      value={editingFormData.name}
-                      onChange={handleEditChange}
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  ) : (
-                    member.name
-                  )}
-                </td>
-                <td className="p-3">
-                  {editingIndex === index ? (
-                    <input
-                      type="text"
-                      name="emergencyNumber"
-                      value={editingFormData.emergencyNumber}
-                      onChange={handleEditChange}
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  ) : (
-                    member.emergencyNumber
-                  )}
-                </td>
-                <td className="p-3">
-                  {editingIndex === index ? (
-                    <input
-                      type="number"
-                      name="age"
-                      value={editingFormData.age}
-                      onChange={handleEditChange}
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  ) : (
-                    member.age
-                  )}
-                </td>
-                <td className="p-3">
-                  {editingIndex === index ? (
-                    <input
-                      type="text"
-                      name="relation"
-                      value={editingFormData.relation}
-                      onChange={handleEditChange}
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  ) : (
-                    member.relation
-                  )}
-                </td>
-                <td className="p-3">
-                  {editingIndex === index ? (
-                    <input
-                      type="text"
-                      name="bloodGroup"
-                      value={editingFormData.bloodGroup}
-                      onChange={handleEditChange}
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  ) : (
-                    member.bloodGroup
-                  )}
-                </td>
-                <td className="p-3">
-                  {editingIndex === index ? (
-                    <input
-                      type="text"
-                      name="allergies"
-                      value={editingFormData.allergies}
-                      onChange={handleEditChange}
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  ) : (
-                    member.allergies
-                  )}
-                </td>
-                <td className="p-3">
-                  {editingIndex === index ? (
-                    <input
-                      type="text"
-                      name="preExistingIllness"
-                      value={editingFormData.preExistingIllness}
-                      onChange={handleEditChange}
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  ) : (
-                    member.preExistingIllness
-                  )}
-                </td>
-                <td className="p-3">
-                  {editingIndex === index ? (
-                    <input
-                      type="text"
-                      name="abhaId"
-                      value={editingFormData.abhaId}
-                      onChange={handleEditChange}
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  ) : (
-                    member.abhaId
-                  )}
-                </td>
-                <td className="p-3 flex items-center justify-center">
-                  {editingIndex === index ? (
-                    <>
-                      <button
-                        onClick={handleSaveEdit}
-                        className="mr-2 bg-green-600 text-white p-2 rounded-lg hover:bg-green-700 transition-colors"
-                      >
-                        Save
-                      </button>
-                      <button
-                        onClick={() => setEditingIndex(null)}
-                        className="bg-gray-600 text-white p-2 rounded-lg hover:bg-gray-700 transition-colors"
-                      >
-                        Cancel
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        onClick={() => handleEditClick(index)}
-                        className="mr-2 bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition-colors"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(member._id)}
-                        className="bg-red-600 text-white p-2 rounded-lg hover:bg-red-700 transition-colors"
-                      >
-                        Delete
-                      </button>
-                    </>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-
-        </table>
+      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-5xl">
+        <h2 className="text-2xl font-bold mb-4">Family Members</h2>
+        {members.map((member, index) => (
+          <div key={member._id} className="mb-4">
+            <HealthCard member={member} />
+            <button onClick={() => handleEditClick(index)} className="bg-yellow-500 text-white px-4 py-2 rounded mt-2">
+              Edit
+            </button>
+            <button onClick={() => handleDelete(member._id)} className="bg-red-500 text-white px-4 py-2 rounded mt-2 ml-2">
+              Delete
+            </button>
+            <button onClick={() => handleDownloadCard(member)} className="bg-green-500 text-white px-4 py-2 rounded mt-2 ml-2">
+              Download Card
+            </button>
+            {editingIndex === index && (
+              <div className="mt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input
+                    type="text"
+                    name="name"
+                    value={editingFormData.name}
+                    onChange={handleEditChange}
+                    placeholder="Name"
+                    className="border p-2 rounded"
+                  />
+                  <input
+                    type="text"
+                    name="emergencyNumber"
+                    value={editingFormData.emergencyNumber}
+                    onChange={handleEditChange}
+                    placeholder="Emergency Number"
+                    className="border p-2 rounded"
+                  />
+                  <input
+                    type="number"
+                    name="age"
+                    value={editingFormData.age}
+                    onChange={handleEditChange}
+                    placeholder="Age"
+                    className="border p-2 rounded"
+                  />
+                  <input
+                    type="text"
+                    name="relation"
+                    value={editingFormData.relation}
+                    onChange={handleEditChange}
+                    placeholder="Relation"
+                    className="border p-2 rounded"
+                  />
+                  <input
+                    type="text"
+                    name="bloodGroup"
+                    value={editingFormData.bloodGroup}
+                    onChange={handleEditChange}
+                    placeholder="Blood Group"
+                    className="border p-2 rounded"
+                  />
+                  <input
+                    type="text"
+                    name="allergies"
+                    value={editingFormData.allergies}
+                    onChange={handleEditChange}
+                    placeholder="Allergies"
+                    className="border p-2 rounded"
+                  />
+                  <input
+                    type="text"
+                    name="preExistingIllness"
+                    value={editingFormData.preExistingIllness}
+                    onChange={handleEditChange}
+                    placeholder="Pre-existing Illness"
+                    className="border p-2 rounded"
+                  />
+                  <input
+                    type="text"
+                    name="abhaId"
+                    value={editingFormData.abhaId}
+                    onChange={handleEditChange}
+                    placeholder="ABHA ID"
+                    className="border p-2 rounded"
+                  />
+                  <input
+                    type="file"
+                    name="photo"
+                    accept="image/*"
+                    onChange={handleEditChange}
+                    className="border p-2 rounded"
+                  />
+                </div>
+                <button onClick={handleSaveEdit} className="bg-blue-500 text-white px-4 py-2 rounded mt-4">
+                  Save
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
       </div>
+
       <ToastContainer />
     </div>
   );

@@ -36,9 +36,11 @@ export const AppBar = () => {
                 </div>
             </Link>
             <div className="hidden md:flex space-x-6">
+                <a href="/" onClick={handleScroll} className="font-medium hover:text-blue-800 transition duration-300 cursor-pointer flex justify-center flex-col">Home</a>
                 <a href="#services" onClick={handleScroll} className="font-medium hover:text-blue-800 transition duration-300 cursor-pointer flex justify-center flex-col">Services</a>
                 <Link to="/hospitals" className="font-medium hover:text-blue-800 transition duration-300 cursor-pointer flex justify-center flex-col">Hospitals</Link>
                 <Link to="/plans" className="font-medium hover:text-blue-800 transition duration-300 cursor-pointer flex justify-center flex-col">Plans</Link>
+                {/* <Link to="/card" className="font-medium hover:text-blue-800 transition duration-300 cursor-pointer flex justify-center flex-col">Card</Link> */}
                 <a href="#contact" onClick={handleScroll} className="font-medium hover:text-blue-800 transition duration-300 cursor-pointer flex justify-center flex-col">Contact Us</a>
                 <div className="pl-4 cursor-pointer">
                     {userName ? (

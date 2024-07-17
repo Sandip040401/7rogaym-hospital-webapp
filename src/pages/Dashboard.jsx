@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../AuthContext';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import { useNavigate } from 'react-router-dom';
 import Home from '../components/Home';
 import ManageCard from '../components/ManageCard';
 import Notifications from '../components/Notifications';
@@ -9,13 +9,13 @@ import Plans from '../components/Plans';
 export default function Dashboard() {
     const [selectedItem, setSelectedItem] = useState('home');
     const { logout } = useAuth();
-    const navigate = useNavigate(); // Initialize useNavigate
+    const navigate = useNavigate();
 
     const handleLogout = () => {
         console.log('Logout clicked');
-        logout(); // Call the logout function from AuthContext
-        localStorage.removeItem('token'); // Remove the token
-        navigate('/'); // Redirect to the home page
+        logout();
+        localStorage.removeItem('token');
+        navigate('/');
     };
 
     const renderContent = () => {
@@ -30,7 +30,7 @@ export default function Dashboard() {
                 return <Plans />;
             case 'logout':
                 handleLogout();
-                return null; // No need to render Logout component
+                return null;
             default:
                 return <Home />;
         }
@@ -39,14 +39,14 @@ export default function Dashboard() {
     return (
         <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
             <div className="w-full md:w-64 bg-white shadow-lg">
-                <div className="h-16 flex items-center justify-center border-b bg-white text-black">
+                <div className="h-16 flex items-center justify-center border-b bg-blue-600 text-white">
                     <span className="text-xl font-semibold">My Dashboard</span>
                 </div>
                 <ul className="mt-4">
                     {[
                         { id: 'home', label: 'Home' },
                         { id: 'managecard', label: 'Manage Card' },
-                        { id: 'notifications', label: 'Notifications' },
+                        { id: 'notifications', label: 'Settings' },
                         { id: 'plans', label: 'Plans' },
                         { id: 'logout', label: 'Logout', action: handleLogout },
                     ].map((item) => (
@@ -61,7 +61,7 @@ export default function Dashboard() {
                     ))}
                 </ul>
             </div>
-            <div className="flex-1 p-6">
+            <div className="flex-1 p-6 bg-white shadow-md rounded-lg">
                 {renderContent()}
             </div>
         </div>

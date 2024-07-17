@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { HospitalCard } from "./HospitalCard";
+import { ClipLoader } from 'react-spinners';
 
 export const Hospitals = () => {
     const [hospitals, setHospitals] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchHospitals = async () => {
@@ -32,8 +34,10 @@ export const Hospitals = () => {
                         }));
                     setHospitals(transformedData);
                 }
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching hospitals:', error);
+                setLoading(false);
             }
         };
 
@@ -41,10 +45,16 @@ export const Hospitals = () => {
     }, []);
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center h-full w-full mt-28 px-10 lg:px-20 pb-20">
-            {hospitals.map((hospital, index) => (
-                <HospitalCard key={index} hospital={hospital} />
-            ))}
+        <div className="min-h-screen flex flex-col items-center justify-center mt-28 px-10 lg:px-20 pb-20">
+            {loading ? (
+                <ClipLoader size={50} color={"#123abc"} loading={loading} />
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center w-full">
+                    {hospitals.map((hospital, index) => (
+                        <HospitalCard key={index} hospital={hospital} />
+                    ))}
+                </div>
+            )}
         </div>
     );
 };

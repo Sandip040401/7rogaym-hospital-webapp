@@ -79,55 +79,58 @@ const Home = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-3xl font-semibold mb-6 text-center">User Details</h2>
+    <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">User Details</h2>
+      <p className="text-green-600 mb-8 text-center">You can edit your details and update them.</p>
       <form onSubmit={handleUpdate}>
-        {Object.keys(userData).map((key) => (
-          key !== 'gender' ? (
-            <div key={key} className="mb-6">
-              <label htmlFor={key} className="block text-gray-800 font-medium mb-2">
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </label>
-              <input
-                type="text"
-                id={key}
-                name={key}
-                value={userData[key]}
-                onChange={handleChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent ${['email', 'phoneNumber', 'name'].includes(key) ? 'bg-gray-200 cursor-not-allowed' : ''}`}
-                disabled={['email', 'phoneNumber', 'name'].includes(key)}
-              />
-            </div>
-          ) : (
-            <div key={key} className="mb-6">
-              <label htmlFor={key} className="block text-gray-800 font-medium mb-2">
-                Gender
-              </label>
-              <select
-                id={key}
-                name={key}
-                value={userData[key]}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent"
-              >
-                <option value="">Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Others">Others</option>
-              </select>
-            </div>
-          )
-        ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {Object.keys(userData).map((key) => (
+            key !== 'gender' ? (
+              <div key={key} className="mb-6">
+                <label htmlFor={key} className="block text-gray-800 font-medium mb-2">
+                  {key.charAt(0).toUpperCase() + key.slice(1)}
+                </label>
+                <input
+                  type="text"
+                  id={key}
+                  name={key}
+                  value={userData[key]}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent ${['email', 'phoneNumber', 'name'].includes(key) ? 'bg-gray-200 cursor-not-allowed' : ''}`}
+                  disabled={['email', 'phoneNumber', 'name'].includes(key)}
+                />
+              </div>
+            ) : (
+              <div key={key} className="mb-6">
+                <label htmlFor={key} className="block text-gray-800 font-medium mb-2">
+                  Gender
+                </label>
+                <select
+                  id={key}
+                  name={key}
+                  value={userData[key]}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent"
+                >
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Others">Others</option>
+                </select>
+              </div>
+            )
+          ))}
+        </div>
         {isUpdated && (
           <button
             type="submit"
-            className="w-full py-3 px-6 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-150"
+            className="w-full py-3 px-6 mt-6 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-150"
           >
             Update
           </button>
         )}
       </form>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 };

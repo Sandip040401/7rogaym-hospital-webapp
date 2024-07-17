@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PlanCard } from '../components/PlanCard';
+import { AppBar } from '../components/AppBar';
+import { Footer } from '../components/Footer';
+
 
 const individualPlans = [
   {
@@ -95,19 +98,15 @@ export default function Plans() {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/signin');
-    }
-  }, [navigate]);
-
   const handleSelectPlan = (plan) => {
     setSelectedPlan(plan);
   };
 
   const handlePayNow = () => {
-    if (selectedPlan) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/signin');
+    } else if (selectedPlan) {
       navigate('/payment', { state: { plan: selectedPlan } });
     }
   };
@@ -115,21 +114,29 @@ export default function Plans() {
   const plans = planType === 'individual' ? individualPlans : familyPlans;
 
   return (
-    <div className="p-6">
-      <div className="flex justify-center mb-6">
-        <button
-          className={`px-4 py-2 mx-2 font-semibold rounded ${planType === 'individual' ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300 transition duration-300'}`}
-          onClick={() => setPlanType('individual')}
-        >
-          Individual Plans
-        </button>
-        <button
-          className={`px-4 py-2 mx-2 font-semibold rounded ${planType === 'family' ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300 transition duration-300'}`}
-          onClick={() => setPlanType('family')}
-        >
-          Family Plans
-        </button>
-      </div>
+    <>
+    <AppBar/>
+        <div className="p-6">
+<div className="flex justify-center mb-6">
+  <div className="bg-gray-100 rounded-full p-1 flex items-center justify-between w-80">
+    <button
+      className={`flex-1 text-center px-4 py-2 font-semibold rounded-full transition-all duration-300 ${
+        planType === 'individual' ? 'bg-white shadow' : 'text-gray-500'
+      }`}
+      onClick={() => setPlanType('individual')}
+    >
+      Individual Plans
+    </button>
+    <button
+      className={`flex-1 text-center px-4 py-2 font-semibold rounded-full transition-all duration-300 ${
+        planType === 'family' ? 'bg-white shadow' : 'text-gray-500'
+      }`}
+      onClick={() => setPlanType('family')}
+    >
+      Family Plans
+    </button>
+  </div>
+</div>
 
       <div>
         <h2 className="text-2xl font-bold mb-4 text-center">{planType === 'individual' ? 'Individual Plans' : 'Family Plans'}</h2>
@@ -153,5 +160,8 @@ export default function Plans() {
         </div>
       )}
     </div>
+    <Footer/>
+    </>
+
   );
 }
