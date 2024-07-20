@@ -11,7 +11,7 @@ const capitalizeFirstLetter = (string) => {
   return string ? string.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase()) : 'null';
 };
 
-const HealthCard = ({ member }) => {
+const PreminumHealthCard = ({ member }) => {
   const currentMonthYear = getCurrentMonthYear();
 
   return (
@@ -22,7 +22,7 @@ const HealthCard = ({ member }) => {
       </div>
       <div className='relative'>
         <div className='absolute -rotate-90 text-custom font-medium text-slate-400' style={{ left: '-25px', top: '20px' }}>
-           on: &nbsp;{currentMonthYear}
+          Issued on: &nbsp;{currentMonthYear}
         </div>
         {member?.photo ? (
           <img src={member.photo} className='h-24 w-20 absolute border-2 border-black' style={{ left: '30px', bottom: '-70px' }} alt="" />
@@ -79,4 +79,4 @@ const HealthCard = ({ member }) => {
   );
 };
 
-export default HealthCard;
+export default PreminumHealthCard;

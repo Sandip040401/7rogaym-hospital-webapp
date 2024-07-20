@@ -114,7 +114,7 @@ export default function Plans() {
 
   return (
     <>
-    <AppBar/>
+    {/* <AppBar/> */}
         <div className="p-6">
 <div className="flex justify-center mb-6">
   <div className="bg-gray-100 rounded-full p-1 flex items-center justify-between w-80">

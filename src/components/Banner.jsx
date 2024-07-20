@@ -8,7 +8,7 @@ export const Banner = () => {
             description: "Up to 30% discount on OPD/IPD",
             color: "bg-blue-100 hover:bg-blue-200",
             textSize: "text-md",
-            descSize: "text-xs"
+            descSize: "text-sm"
         },
         {
             imageSrc: "https://img.icons8.com/dusk/64/microscope.png",
@@ -16,7 +16,7 @@ export const Banner = () => {
             description: "Up to 40% discount on Lab Tests & Diagnostic Centers",
             color: "bg-green-100 hover:bg-green-200",
             textSize: "text-md",
-            descSize: "text-xs"
+            descSize: "text-sm"
         },
         {
             imageSrc: "https://img.icons8.com/external-flatart-icons-lineal-color-flatarticons/64/external-medicines-health-and-medical-flatart-icons-lineal-color-flatarticons.png",
@@ -24,7 +24,7 @@ export const Banner = () => {
             description: "Up to 20% discount on Medicines",
             color: "bg-yellow-100 hover:bg-yellow-200",
             textSize: "text-md",
-            descSize: "text-xs"
+            descSize: "text-sm"
         }
     ];
     

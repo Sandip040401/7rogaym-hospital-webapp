@@ -5,6 +5,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import 'react-toastify/dist/ReactToastify.css';
 import HealthCard from './HealthCard';
+import PremiumHealthCard from './PremiumHealthCard';
 
 const ManageCard = () => {
   const [formData, setFormData] = useState({
@@ -13,10 +14,21 @@ const ManageCard = () => {
     age: '',
     relation: '',
     bloodGroup: '',
+    gender: '',
+    village: '',
+    tehsil: '',
+    district: '',
+    state: '',
     allergies: '',
     preExistingIllness: '',
     abhaId: '',
     photo: null
+  });
+
+  const [simpleFormData, setSimpleFormData] = useState({
+    name: '',
+    age: '',
+    gender: ''
   });
 
   const [members, setMembers] = useState([]);
@@ -28,6 +40,11 @@ const ManageCard = () => {
     age: '',
     relation: '',
     bloodGroup: '',
+    gender: '',
+    village: '',
+    tehsil: '',
+    district: '',
+    state: '',
     allergies: '',
     preExistingIllness: '',
     abhaId: '',
@@ -92,10 +109,19 @@ const ManageCard = () => {
     });
   };
 
+  const handleSimpleFormChange = (e) => {
+    const { name, value } = e.target;
+    setSimpleFormData({
+      ...simpleFormData,
+      [name]: value
+    });
+  };
+
   const handleAddMember = async () => {
+    const formDataToSend = members.length === 0 ? formData : simpleFormData;
     const formDataWithPhoto = new FormData();
-    for (const key in formData) {
-      formDataWithPhoto.append(key, formData[key]);
+    for (const key in formDataToSend) {
+      formDataWithPhoto.append(key, formDataToSend[key]);
     }
     try {
       const tokenString = localStorage.getItem('token');
@@ -121,9 +147,19 @@ const ManageCard = () => {
         relation: '',
         bloodGroup: '',
         allergies: '',
+        gender: '',
+        village: '',
+        tehsil: '',
+        district: '',
+        state: '',
         preExistingIllness: '',
         abhaId: '',
         photo: null
+      });
+      setSimpleFormData({
+        name: '',
+        age: '',
+        gender: ''
       });
       toast.success('Member added successfully');
     } catch (error) {
@@ -167,6 +203,11 @@ const ManageCard = () => {
         age: '',
         relation: '',
         bloodGroup: '',
+        gender: '',
+        village: '',
+        tehsil: '',
+        district: '',
+        state: '',
         allergies: '',
         preExistingIllness: '',
         abhaId: '',
@@ -198,22 +239,98 @@ const ManageCard = () => {
   const handleDownloadCard = async (member) => {
     const cardElement = document.getElementById(`card-${member._id}`);
     const scale = 6;
+  
+    const buttons = cardElement.querySelectorAll('button');
+    buttons.forEach(button => button.style.display = 'none');
+  
+    const imagesLoaded = () => {
+      const images = cardElement.getElementsByTagName('img');
+      const promises = [];
+      for (let i = 0; i < images.length; i++) {
+        const img = images[i];
+        if (!img.complete) {
+          promises.push(new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+          }));
+        }
+      }
+      return Promise.all(promises);
+    };
+  
+    await document.fonts.ready;
+    await imagesLoaded();
+  
+    const cardStyle = window.getComputedStyle(cardElement);
+    const cardWidth = parseFloat(cardStyle.width);
+    const cardHeight = parseFloat(cardStyle.height);
+  
     const canvas = await html2canvas(cardElement, {
       scale: scale,
       useCORS: true,
       allowTaint: true,
+      width: cardWidth,
+      height: cardHeight,
+      onclone: (clonedDoc) => {
+        clonedDoc.getElementById(`card-${member._id}`).style.display = 'block';
+      }
     });
-    const imgData = canvas.toDataURL('image/png');
-    const imgWidth = canvas.width / scale;
-    const imgHeight = canvas.height / scale;
+  
+    // Cropping the canvas to remove the white part
+    const context = canvas.getContext('2d');
+    const imgData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const croppedCanvas = document.createElement('canvas');
+    croppedCanvas.width = canvas.width;
+    croppedCanvas.height = canvas.height;
+  
+    const croppedContext = croppedCanvas.getContext('2d');
+    croppedContext.putImageData(imgData, 0, 0);
+  
+    // Finding the rightmost non-white pixel
+    let rightmostNonWhite = 0;
+    const imgDataArray = imgData.data;
+    for (let y = 0; y < canvas.height; y++) {
+      for (let x = canvas.width - 1; x >= 0; x--) {
+        const index = (y * canvas.width + x) * 4;
+        const alpha = imgDataArray[index + 3];
+        if (alpha !== 0) { // checking if pixel is not transparent
+          const red = imgDataArray[index];
+          const green = imgDataArray[index + 1];
+          const blue = imgDataArray[index + 2];
+          if (!(red > 240 && green > 240 && blue > 240)) { // checking if pixel is not white
+            rightmostNonWhite = Math.max(rightmostNonWhite, x);
+            break;
+          }
+        }
+      }
+    }
+  
+    const cropWidth = rightmostNonWhite + 1; // +1 to include the pixel itself
+  
+    const croppedFinalCanvas = document.createElement('canvas');
+    croppedFinalCanvas.width = cropWidth;
+    croppedFinalCanvas.height = canvas.height;
+    const croppedFinalContext = croppedFinalCanvas.getContext('2d');
+    croppedFinalContext.drawImage(canvas, 0, 0, cropWidth, canvas.height, 0, 0, cropWidth, canvas.height);
+  
+    const finalImgData = croppedFinalCanvas.toDataURL('image/png');
+    const imgWidth = croppedFinalCanvas.width / scale;
+    const imgHeight = croppedFinalCanvas.height / scale;
+  
     const pdf = new jsPDF({
       orientation: 'landscape',
       unit: 'pt',
       format: [imgWidth, imgHeight]
     });
-    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
+  
+    pdf.addImage(finalImgData, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
+  
     pdf.save(`${member.name}_card.pdf`);
+    buttons.forEach(button => button.style.display = 'block');
   };
+  
+  
+  
 
   const planMemberLimits = {
     'Solo Lite': 1,
@@ -227,194 +344,409 @@ const ManageCard = () => {
   const maxMembers = planMemberLimits[planDetails.planName] || 0;
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen flex flex-col items-center">
-      <div className="bg-white shadow-lg rounded-lg p-8 mb-6 w-full max-w-5xl">
-        <h2 className="text-2xl font-bold mb-4">Selected Plan</h2>
-        <p className="text-lg text-gray-700 mb-4">Plan Name: {planDetails.planName}</p>
-        <p className="text-lg text-gray-700 mb-4">Amount: ${planDetails.amount}</p>
-      </div>
-
-      {members.length < maxMembers && (
-        <div className="bg-white shadow-lg rounded-lg p-8 mb-6 w-full max-w-5xl">
-          <h2 className="text-2xl font-bold mb-4">Add Family Member</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleFormChange}
-              placeholder="Name"
-              className="border p-2 rounded"
-            />
-            <input
-              type="text"
-              name="emergencyNumber"
-              value={formData.emergencyNumber}
-              onChange={handleFormChange}
-              placeholder="Emergency Number"
-              className="border p-2 rounded"
-            />
-            <input
-              type="number"
-              name="age"
-              value={formData.age}
-              onChange={handleFormChange}
-              placeholder="Age"
-              className="border p-2 rounded"
-            />
-            <input
-              type="text"
-              name="relation"
-              value={formData.relation}
-              onChange={handleFormChange}
-              placeholder="Relation"
-              className="border p-2 rounded"
-            />
-            <input
-              type="text"
-              name="bloodGroup"
-              value={formData.bloodGroup}
-              onChange={handleFormChange}
-              placeholder="Blood Group"
-              className="border p-2 rounded"
-            />
-            <input
-              type="text"
-              name="allergies"
-              value={formData.allergies}
-              onChange={handleFormChange}
-              placeholder="Allergies"
-              className="border p-2 rounded"
-            />
-            <input
-              type="text"
-              name="preExistingIllness"
-              value={formData.preExistingIllness}
-              onChange={handleFormChange}
-              placeholder="Pre-existing Illness"
-              className="border p-2 rounded"
-            />
-            <input
-              type="text"
-              name="abhaId"
-              value={formData.abhaId}
-              onChange={handleFormChange}
-              placeholder="ABHA ID"
-              className="border p-2 rounded"
-            />
-            <input
-              type="file"
-              name="photo"
-              accept="image/*"
-              onChange={handleFormChange}
-              className="border p-2 rounded"
-            />
-          </div>
-          <button onClick={handleAddMember} className="bg-blue-500 text-white px-4 py-2 rounded mt-4">
+    <div className="min-h-screen">
+      <ToastContainer />
+      <div className="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto">
+        <h2 className="text-2xl font-bold mb-4">Manage Health Cards</h2>
+        <p>{planDetails.planName}</p>
+        <form>
+          {members.length === 0 && (
+            <>
+              <div className="mb-4">
+                <label className="block mb-2">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleFormChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">Emergency Number</label>
+                <input
+                  type="text"
+                  name="emergencyNumber"
+                  value={formData.emergencyNumber}
+                  onChange={handleFormChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">Age</label>
+                <input
+                  type="text"
+                  name="age"
+                  value={formData.age}
+                  onChange={handleFormChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">Relation</label>
+                <input
+                  type="text"
+                  name="relation"
+                  value={formData.relation}
+                  onChange={handleFormChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">Blood Group</label>
+                <input
+                  type="text"
+                  name="bloodGroup"
+                  value={formData.bloodGroup}
+                  onChange={handleFormChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">Gender</label>
+                <select
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleFormChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                >
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">Village</label>
+                <input
+                  type="text"
+                  name="village"
+                  value={formData.village}
+                  onChange={handleFormChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">Tehsil</label>
+                <input
+                  type="text"
+                  name="tehsil"
+                  value={formData.tehsil}
+                  onChange={handleFormChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">District</label>
+                <input
+                  type="text"
+                  name="district"
+                  value={formData.district}
+                  onChange={handleFormChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">State</label>
+                <input
+                  type="text"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleFormChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">Allergies</label>
+                <input
+                  type="text"
+                  name="allergies"
+                  value={formData.allergies}
+                  onChange={handleFormChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">Pre-Existing Illness</label>
+                <input
+                  type="text"
+                  name="preExistingIllness"
+                  value={formData.preExistingIllness}
+                  onChange={handleFormChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">ABHA ID</label>
+                <input
+                  type="text"
+                  name="abhaId"
+                  value={formData.abhaId}
+                  onChange={handleFormChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">Photo</label>
+                <input
+                  type="file"
+                  name="photo"
+                  onChange={handleFormChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+            </>
+          )}
+          {members.length > 0 && members.length < maxMembers && (
+            <>
+              <div className="mb-4">
+                <label className="block mb-2">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={simpleFormData.name}
+                  onChange={handleSimpleFormChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">Age</label>
+                <input
+                  type="text"
+                  name="age"
+                  value={simpleFormData.age}
+                  onChange={handleSimpleFormChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">Gender</label>
+                <select
+                  name="gender"
+                  value={simpleFormData.gender}
+                  onChange={handleSimpleFormChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                >
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </>
+          )}
+        </form>
+        {members.length < maxMembers && (
+          <button
+            onClick={handleAddMember}
+            className="w-full bg-blue-500 text-white p-2 rounded mt-4"
+          >
             Add Member
           </button>
-        </div>
-      )}
-
-      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-5xl">
-        <h2 className="text-2xl font-bold mb-4">Family Members</h2>
-        {members.map((member, index) => (
-          <div key={member._id} className="mb-4">
-            <HealthCard member={member} />
-            <button onClick={() => handleEditClick(index)} className="bg-yellow-500 text-white px-4 py-2 rounded mt-2">
-              Edit
-            </button>
-            <button onClick={() => handleDelete(member._id)} className="bg-red-500 text-white px-4 py-2 rounded mt-2 ml-2">
-              Delete
-            </button>
-            <button onClick={() => handleDownloadCard(member)} className="bg-green-500 text-white px-4 py-2 rounded mt-2 ml-2">
-              Download Card
-            </button>
-            {editingIndex === index && (
-              <div className="mt-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input
-                    type="text"
-                    name="name"
-                    value={editingFormData.name}
-                    onChange={handleEditChange}
-                    placeholder="Name"
-                    className="border p-2 rounded"
-                  />
-                  <input
-                    type="text"
-                    name="emergencyNumber"
-                    value={editingFormData.emergencyNumber}
-                    onChange={handleEditChange}
-                    placeholder="Emergency Number"
-                    className="border p-2 rounded"
-                  />
-                  <input
-                    type="number"
-                    name="age"
-                    value={editingFormData.age}
-                    onChange={handleEditChange}
-                    placeholder="Age"
-                    className="border p-2 rounded"
-                  />
-                  <input
-                    type="text"
-                    name="relation"
-                    value={editingFormData.relation}
-                    onChange={handleEditChange}
-                    placeholder="Relation"
-                    className="border p-2 rounded"
-                  />
-                  <input
-                    type="text"
-                    name="bloodGroup"
-                    value={editingFormData.bloodGroup}
-                    onChange={handleEditChange}
-                    placeholder="Blood Group"
-                    className="border p-2 rounded"
-                  />
-                  <input
-                    type="text"
-                    name="allergies"
-                    value={editingFormData.allergies}
-                    onChange={handleEditChange}
-                    placeholder="Allergies"
-                    className="border p-2 rounded"
-                  />
-                  <input
-                    type="text"
-                    name="preExistingIllness"
-                    value={editingFormData.preExistingIllness}
-                    onChange={handleEditChange}
-                    placeholder="Pre-existing Illness"
-                    className="border p-2 rounded"
-                  />
-                  <input
-                    type="text"
-                    name="abhaId"
-                    value={editingFormData.abhaId}
-                    onChange={handleEditChange}
-                    placeholder="ABHA ID"
-                    className="border p-2 rounded"
-                  />
-                  <input
-                    type="file"
-                    name="photo"
-                    accept="image/*"
-                    onChange={handleEditChange}
-                    className="border p-2 rounded"
-                  />
-                </div>
-                <button onClick={handleSaveEdit} className="bg-blue-500 text-white px-4 py-2 rounded mt-4">
-                  Save
-                </button>
-              </div>
-            )}
-          </div>
-        ))}
+        )}
       </div>
-
-      <ToastContainer />
+      <div className="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto mt-6">
+        <ul>
+          {members.map((member, index) => (
+            <li key={index} className="mb-6">
+              {editingIndex !== index ? (
+                <div id={`card-${member._id}`} className="flex flex-col items-center">
+                  {planDetails.planName === 'Solo Lite' ? (
+                    <PremiumHealthCard member={member} />
+                  ) : planDetails.planName === 'Solo Premium' ? (
+                    <PremiumHealthCard member={member} />
+                  ) : planDetails.planName === 'Solo' ? (
+                    <PremiumHealthCard member={member} />
+                  ) : planDetails.planName === 'Couple' ? (
+                    <HealthCard member={member} />
+                  ) : planDetails.planName === 'Family' ? (
+                    <HealthCard member={member} />
+                  ) : planDetails.planName === 'Family+' ? (
+                    <HealthCard member={member} />
+                  ) : (
+                    <HealthCard member={member} /> // Default to HealthCard
+                  )}
+                  <div className='flex'>
+                      <button
+                        onClick={() => handleEditClick(index)}
+                        className="bg-yellow-500 text-white px-4 py-2 rounded mt-4 mr-2"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(member._id)}
+                        className="bg-red-500 text-white px-4 py-2 rounded mt-4 mr-2"
+                      >
+                        Delete
+                      </button>
+                      <button
+                        onClick={() => handleDownloadCard(member)}
+                        className="bg-green-500 text-white px-4 py-2 rounded mt-4"
+                      >
+                        Download Card
+                      </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-4 w-full">
+                  <form>
+                    <div className="mb-4">
+                      <label className="block mb-2">Name</label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={editingFormData.name}
+                        onChange={handleEditChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-2">Emergency Number</label>
+                      <input
+                        type="text"
+                        name="emergencyNumber"
+                        value={editingFormData.emergencyNumber}
+                        onChange={handleEditChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-2">Age</label>
+                      <input
+                        type="text"
+                        name="age"
+                        value={editingFormData.age}
+                        onChange={handleEditChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-2">Relation</label>
+                      <input
+                        type="text"
+                        name="relation"
+                        value={editingFormData.relation}
+                        onChange={handleEditChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-2">Blood Group</label>
+                      <input
+                        type="text"
+                        name="bloodGroup"
+                        value={editingFormData.bloodGroup}
+                        onChange={handleEditChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-2">Gender</label>
+                      <select
+                        name="gender"
+                        value={editingFormData.gender}
+                        onChange={handleEditChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                      >
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-2">Village</label>
+                      <input
+                        type="text"
+                        name="village"
+                        value={editingFormData.village}
+                        onChange={handleEditChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-2">Tehsil</label>
+                      <input
+                        type="text"
+                        name="tehsil"
+                        value={editingFormData.tehsil}
+                        onChange={handleEditChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-2">District</label>
+                      <input
+                        type="text"
+                        name="district"
+                        value={editingFormData.district}
+                        onChange={handleEditChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-2">State</label>
+                      <input
+                        type="text"
+                        name="state"
+                        value={editingFormData.state}
+                        onChange={handleEditChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-2">Allergies</label>
+                      <input
+                        type="text"
+                        name="allergies"
+                        value={editingFormData.allergies}
+                        onChange={handleEditChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-2">Pre-Existing Illness</label>
+                      <input
+                        type="text"
+                        name="preExistingIllness"
+                        value={editingFormData.preExistingIllness}
+                        onChange={handleEditChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-2">ABHA ID</label>
+                      <input
+                        type="text"
+                        name="abhaId"
+                        value={editingFormData.abhaId}
+                        onChange={handleEditChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-2">Photo</label>
+                      <input
+                        type="file"
+                        name="photo"
+                        onChange={handleEditChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleSaveEdit}
+                      className="w-full bg-blue-500 text-white p-2 rounded mt-4"
+                    >
+                      Save
+                    </button>
+                  </form>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
