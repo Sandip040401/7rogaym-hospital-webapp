@@ -8,6 +8,7 @@ export default {
     fontSize: {
       custom:'0.5rem',
       custom1:'0.7rem',
+      custom2:'0.6rem',
       xs: '0.4rem',
       sm: '0.8rem',
       base: '1rem',
