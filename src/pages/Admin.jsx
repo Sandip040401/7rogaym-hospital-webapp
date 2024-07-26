@@ -1,15 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import HealthCard from '../components/HealthCard';
+import PremiumHealthCard from '../components/PremiumHealthCard';
+import BackCard from '../components/BackCard';
 
 const Admin = () => {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
   const [subscriptionStatus, setSubscriptionStatus] = useState('');
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [healthCards, setHealthCards] = useState([]);
+  const [showHealthCards, setShowHealthCards] = useState(false);
   const baseUrl = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
+  const cardRefs = useRef([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -28,6 +37,25 @@ const Admin = () => {
     fetchUsers();
   }, [baseUrl]);
 
+  useEffect(() => {
+    if (selectedUser) {
+      const fetchHealthCards = async () => {
+        try {
+          const response = await axios.get(`${baseUrl}/api/admin/users/${selectedUser.email}/members`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('admintoken')}`
+            }
+          });
+          setHealthCards(response.data);
+        } catch (error) {
+          toast.error('Failed to fetch health cards');
+        }
+      };
+
+      fetchHealthCards();
+    }
+  }, [selectedUser, baseUrl]);
+
   const handleLogout = () => {
     localStorage.removeItem('admintoken');
     navigate('/');
@@ -36,6 +64,7 @@ const Admin = () => {
   const handleEdit = (user) => {
     setEditingUser(user.email);
     setSubscriptionStatus(user.subscriptionStatus);
+    setSelectedUser(user);
   };
 
   const handleSave = async (email) => {
@@ -66,6 +95,34 @@ const Admin = () => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  const handleDownload = async () => {
+    const scale = 6;
+
+    for (let index = 0; index < healthCards.length; index++) {
+      const cardElement = cardRefs.current[index];
+
+      await document.fonts.ready;
+      const canvas = await html2canvas(cardElement, {
+        scale: scale,
+        useCORS: true,
+        allowTaint: true,
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const imgWidth = canvas.width / scale;
+      const imgHeight = canvas.height / scale;
+
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'pt',
+        format: [imgWidth, imgHeight],
+      });
+
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
+      pdf.save(`${healthCards[index].name}_card.pdf`);
+    }
+  };
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
@@ -74,7 +131,7 @@ const Admin = () => {
           Logout
         </button>
       </div>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto overflow-y-auto max-h-80 mb-4">
         <table className="min-w-full bg-white border border-gray-200">
           <thead>
             <tr>
@@ -114,7 +171,7 @@ const Admin = () => {
                 <td className="py-2 px-4 border-b">{user.state || 'N/A'}</td>
                 <td className="py-2 px-4 border-b">
                   {editingUser === user.email ? (
-                    <>
+                    <div className='flex'>
                       <button
                         onClick={() => handleSave(user.email)}
                         className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-700 transition duration-150"
@@ -127,7 +184,7 @@ const Admin = () => {
                       >
                         Cancel
                       </button>
-                    </>
+                    </div>
                   ) : (
                     <button
                       onClick={() => handleEdit(user)}
@@ -142,6 +199,46 @@ const Admin = () => {
           </tbody>
         </table>
       </div>
+      {selectedUser && (
+        <div className="mt-6">
+          <div className="flex items-center mb-4">
+            <h2 className="text-xl font-bold mr-4">Health Cards for {selectedUser.name}</h2>
+            <button
+              onClick={() => setShowHealthCards(!showHealthCards)}
+              className={`px-4 py-2 rounded transition duration-150 ${showHealthCards ? 'bg-red-500 text-white hover:bg-red-700' : 'bg-blue-500 text-white hover:bg-blue-700'}`}
+            >
+              {showHealthCards ? 'Hide Cards' : 'Show Cards'}
+            </button>
+            {showHealthCards && (
+              <button
+                onClick={handleDownload}
+                className="ml-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-150"
+              >
+                Download Cards
+              </button>
+            )}
+          </div>
+          {showHealthCards && (
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              {healthCards.map((member, index) => (
+                <div key={member._id} ref={(el) => (cardRefs.current[index] = el)} className="mb-6" id={`card-${member._id}`}>
+                  {selectedUser.selectedPlan.includes('Solo') ? (
+                    <div className='flex'>
+                      <PremiumHealthCard member={member} />
+                      <BackCard member={member} />
+                    </div>
+                  ) : (
+                    <div className='flex'>
+                      <HealthCard member={member} />
+                      <BackCard member={member} />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
       <ToastContainer />
     </div>
   );

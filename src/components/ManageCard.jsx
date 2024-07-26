@@ -6,6 +6,7 @@ import jsPDF from 'jspdf';
 import 'react-toastify/dist/ReactToastify.css';
 import HealthCard from './HealthCard';
 import PremiumHealthCard from './PremiumHealthCard';
+import BackCard from './BackCard';
 
 const initialFormState = {
   name: '',
@@ -118,6 +119,11 @@ const ManageCard = () => {
       console.error('Error saving edited member:', error);
       toast.error('Failed to update member');
     }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingIndex(null);
+    setEditingFormData(initialFormState);
   };
 
   const handleDelete = async (memberId) => {
@@ -245,21 +251,23 @@ const ManageCard = () => {
         <form>
           {members.length === 0 ? (
             <>
-              {Object.keys(initialFormState).map((key) => (
-                <div key={key} className="mb-4">
-                  <label className="block mb-2">{key.replace(/([A-Z])/g, ' $1').toUpperCase()}</label>
-                  <input
-                    type={key === 'photo' ? 'file' : 'text'}
-                    name={key}
-                    value={key === 'photo' ? undefined : formData[key]}
-                    onChange={handleFormChange}
-                    className="w-full p-2 border border-gray-300 rounded"
-                  />
-                </div>
-              ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {Object.keys(initialFormState).map((key) => (
+                  <div key={key} className="mb-4">
+                    <label className="block mb-2">{key.replace(/([A-Z])/g, ' $1').toUpperCase()}</label>
+                    <input
+                      type={key === 'photo' ? 'file' : 'text'}
+                      name={key}
+                      value={key === 'photo' ? undefined : formData[key]}
+                      onChange={handleFormChange}
+                      className="w-full p-2 border border-gray-300 rounded"
+                    />
+                  </div>
+                ))}
+              </div>
             </>
           ) : (
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {Object.keys(simpleFormData).map((key) => (
                 <div key={key} className="mb-4">
                   <label className="block mb-2">{key.replace(/([A-Z])/g, ' $1').toUpperCase()}</label>
@@ -286,19 +294,25 @@ const ManageCard = () => {
         <h3 className="text-xl font-bold mb-4">Existing Members</h3>
         <ul>
           {members.map((member, index) => (
-            <li key={index} className="mb-6">
+            <li key={member._id} className="mb-6">
               {editingIndex !== index ? (
                 <div id={`card-${member._id}`} className="flex flex-col items-center">
                   {planDetails.planName.includes('Solo') ? (
-                    <PremiumHealthCard member={member} />
+                    <div className='flex'>
+                      <PremiumHealthCard member={member} />
+                      <BackCard member={member}/>
+                    </div>
                   ) : (
-                    <HealthCard member={member} />
+                    <div className='flex'>
+                      <HealthCard member={member} />
+                      <BackCard member={member}/>
+                    </div>
                   )}
                   <div className="flex">
                     <button onClick={() => handleEditClick(index)} className="bg-yellow-500 text-white px-4 py-2 rounded mt-4 mr-2">
                       Edit
                     </button>
-                    <button onClick={() => handleDelete(member._id)} className="bg-red-500 text-white px-4 py-2 rounded mt-4">
+                    <button onClick={() => handleDelete(member._id)} className="bg-red-500 text-white px-4 py-2 rounded mt-4 mr-2">
                       Delete
                     </button>
                     <button onClick={() => handleDownloadCard(member)} className="bg-green-500 text-white px-4 py-2 rounded mt-4">
@@ -308,21 +322,28 @@ const ManageCard = () => {
                 </div>
               ) : (
                 <div className="p-4 mb-4">
-                  {Object.keys(editingFormData).map((key) => (
-                    <div key={key} className="mb-4">
-                      <label className="block mb-2">{key.replace(/([A-Z])/g, ' $1').toUpperCase()}</label>
-                      <input
-                        type={key === 'photo' ? 'file' : 'text'}
-                        name={key}
-                        value={key === 'photo' ? undefined : editingFormData[key]}
-                        onChange={handleEditChange}
-                        className="w-full p-2 border border-gray-300 rounded"
-                      />
-                    </div>
-                  ))}
-                  <button onClick={handleSaveEdit} className="bg-blue-500 text-white px-4 py-2 rounded mt-4">
-                    Save
-                  </button>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    {Object.keys(editingFormData).map((key) => (
+                      <div key={key} className="mb-4">
+                        <label className="block mb-2">{key.replace(/([A-Z])/g, ' $1').toUpperCase()}</label>
+                        <input
+                          type={key === 'photo' ? 'file' : 'text'}
+                          name={key}
+                          value={key === 'photo' ? undefined : editingFormData[key]}
+                          onChange={handleEditChange}
+                          className="w-full p-2 border border-gray-300 rounded"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex">
+                    <button onClick={handleSaveEdit} className="bg-blue-500 text-white px-4 py-2 rounded mt-4 mr-2">
+                      Save
+                    </button>
+                    <button onClick={handleCancelEdit} className="bg-gray-500 text-white px-4 py-2 rounded mt-4">
+                      Cancel
+                    </button>
+                  </div>
                 </div>
               )}
             </li>

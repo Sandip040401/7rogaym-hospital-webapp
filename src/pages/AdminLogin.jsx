@@ -27,7 +27,7 @@ export default function AdminLogin() {
         try {
             await login(email, password);
             toast.success('Login successful');
-            navigate('/admin-dashboard');
+            navigate('/admin-dashboard'); // Ensure this route is correctly defined
         } catch (error) {
             setError(error.response?.data?.message || 'Login failed');
             toast.error(error.response?.data?.message || 'Login failed');
@@ -80,9 +80,9 @@ export default function AdminLogin() {
         }
         setLoading(true);
         try {
-            await axios.post(`${backendUrl}/api/admin/update-password`, { email, newPassword, confirmNewPassword });
+            await axios.post(`${backendUrl}/api/admin/update-password`, { email, newPassword });
             toast.success('Password updated successfully');
-            navigate('/admin');
+            navigate('/admin'); // Redirect to the login page or a different page
         } catch (error) {
             setError(error.response?.data?.message || 'Failed to update password');
             toast.error(error.response?.data?.message || 'Failed to update password');
