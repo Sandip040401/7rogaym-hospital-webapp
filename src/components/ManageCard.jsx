@@ -245,51 +245,53 @@ const ManageCard = () => {
     <div key={key} className="min-h-screen bg-gray-100 py-8">
       <ToastContainer />
       <div className="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto">
-        <h2 className="text-2xl font-bold mb-4">Manage Health Cards</h2>
-        <p className="mb-4 text-green-600 text-xl font-semibold">Plan: {planDetails.planName}</p>
-        <p className="mb-4 text-gray-600">You can add {remainingMembers} more member(s).</p>
-        <form>
-          {members.length === 0 ? (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {Object.keys(initialFormState).map((key) => (
-                  <div key={key} className="mb-4">
-                    <label className="block mb-2">{key.replace(/([A-Z])/g, ' $1').toUpperCase()}</label>
-                    <input
-                      type={key === 'photo' ? 'file' : 'text'}
-                      name={key}
-                      value={key === 'photo' ? undefined : formData[key]}
-                      onChange={handleFormChange}
-                      className="w-full p-2 border border-gray-300 rounded"
-                    />
-                  </div>
-                ))}
-              </div>
-            </>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {Object.keys(simpleFormData).map((key) => (
-                <div key={key} className="mb-4">
-                  <label className="block mb-2">{key.replace(/([A-Z])/g, ' $1').toUpperCase()}</label>
-                  <input
-                    type="text"
-                    name={key}
-                    value={simpleFormData[key]}
-                    onChange={handleSimpleFormChange}
-                    className="w-full p-2 border border-gray-300 rounded"
-                  />
-                </div>
-              ))}
+  <h2 className="text-2xl font-bold mb-4">Manage Health Cards</h2>
+  <p className="mb-4 text-green-600 text-xl font-semibold">Plan: {planDetails.planName}</p>
+  <p className="mb-4 text-gray-600">You can add {remainingMembers} more member(s).</p>
+  <p className="mb-4 text-red-600 font-bold text-lg">Note: Once added, you can't edit the members. Please add carefully.</p>
+  <form>
+    {members.length === 0 ? (
+      <>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {Object.keys(initialFormState).map((key) => (
+            <div key={key} className="mb-4">
+              <label className="block mb-2">{key.replace(/([A-Z])/g, ' $1').toUpperCase()}</label>
+              <input
+                type={key === 'photo' ? 'file' : 'text'}
+                name={key}
+                value={key === 'photo' ? undefined : formData[key]}
+                onChange={handleFormChange}
+                className="w-full p-2 border border-gray-300 rounded"
+              />
             </div>
-          )}
-        </form>
-        {totalMembers < maxMembers && (
-          <button onClick={handleAddMember} className="w-full bg-blue-500 text-white p-2 rounded mt-4">
-            Add Member
-          </button>
-        )}
-        {totalMembers >= maxMembers && <p className="text-red-500 mt-4">Maximum members reached for your plan.</p>}
+          ))}
+        </div>
+      </>
+    ) : (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {Object.keys(simpleFormData).map((key) => (
+          <div key={key} className="mb-4">
+            <label className="block mb-2">{key.replace(/([A-Z])/g, ' $1').toUpperCase()}</label>
+            <input
+              type="text"
+              name={key}
+              value={simpleFormData[key]}
+              onChange={handleSimpleFormChange}
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+        ))}
       </div>
+    )}
+  </form>
+  {totalMembers < maxMembers && (
+    <button onClick={handleAddMember} className="w-full bg-blue-500 text-white p-2 rounded mt-4">
+      Add Member
+    </button>
+  )}
+  {totalMembers >= maxMembers && <p className="text-red-500 mt-4">Maximum members reached for your plan.</p>}
+</div>
+
       <div className="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto mt-6">
         <h3 className="text-xl font-bold mb-4">Existing Members</h3>
         <ul>
@@ -309,9 +311,9 @@ const ManageCard = () => {
                     </div>
                   )}
                   <div className="flex">
-                    <button onClick={() => handleEditClick(index)} className="bg-yellow-500 text-white px-4 py-2 rounded mt-4 mr-2">
+                    {/* <button onClick={() => handleEditClick(index)} className="bg-yellow-500 text-white px-4 py-2 rounded mt-4 mr-2">
                       Edit
-                    </button>
+                    </button> */}
                     <button onClick={() => handleDelete(member._id)} className="bg-red-500 text-white px-4 py-2 rounded mt-4 mr-2">
                       Delete
                     </button>

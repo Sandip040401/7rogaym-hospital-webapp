@@ -1,29 +1,36 @@
 import React from 'react';
-import Tooltip from '@mui/material/Tooltip';
 
 export const PlanCard = ({ title, price, period, features, isSelected, onSelect, isRecommended }) => {
   return (
     <div
-      className={`relative border rounded-lg p-6 w-80 shadow-lg transition transform hover:scale-105 ${isSelected ? 'border-blue-600' : 'border-gray-200'}`}
+      className={`relative border rounded-lg p-6 w-80 shadow-lg ${isSelected ? 'border-blue-600' : 'border-gray-200'}`}
       onClick={onSelect}
     >
       {isRecommended && (
-        <div className="text-white bg-yellow-500 px-2 py-1 rounded-full text-xs absolute top-2 right-2">
+        <div className="text-white bg-orange-500 text-lg absolute top-0 left-0 w-full h-6 text-center rounded-t-lg">
           Recommended
         </div>
       )}
-      <h3 className="text-xl font-bold mb-2">{title}</h3>
-      <p className="text-gray-600 mb-4">
-        ₹{price} {period}
+      <h3 className="text-lg font-semibold mb-2 mt-6">{title}</h3> {/* Adjusted margin to account for the "Recommended" label */}
+      <p className="mb-4 font-bold text-2xl">
+        ₹{price} <span className='font-semibold text-lg'>{period}</span>
       </p>
-      <ul className="mb-4">
+      <ul className="list-disc list-inside mb-4">
         {features.map((feature, index) => (
-          <Tooltip title={feature} key={index} arrow>
-            <li className="text-gray-700 mb-1">{feature}</li>
-          </Tooltip>
+          <li key={index} className="text-gray-700 mb-1">{feature}</li>
         ))}
       </ul>
-      {isSelected && <div className="text-blue-600 font-semibold">Selected</div>}
+      <div className="mt-4 flex justify-center">
+        {!isSelected ? (
+          <button className="px-4 py-2 bg-black text-white w-full text-center font-semibold rounded-lg">
+            Select
+          </button>
+        ) : (
+          <div className="px-4 py-2 bg-black text-white text-center font-semibold rounded-lg w-full">
+            Selected
+          </div>
+        )}
+      </div>
     </div>
   );
 };

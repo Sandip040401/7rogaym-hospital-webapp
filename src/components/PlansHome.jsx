@@ -92,7 +92,7 @@ const familyPlans = [
   },
 ];
 
-export default function Plans() {
+export default function PlansHome() {
   const [planType, setPlanType] = useState('individual');
   const [selectedPlan, setSelectedPlan] = useState(null);
   const navigate = useNavigate();
@@ -123,7 +123,7 @@ export default function Plans() {
   return (
     <>
       {/* <AppBar /> */}
-      <div className="p-6 mt-16">
+      <div className="p-6">
         <div className="flex justify-center mb-6">
           <div className="bg-gray-100 rounded-full p-1 flex items-center justify-between w-80">
             <button

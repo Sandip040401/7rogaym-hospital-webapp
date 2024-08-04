@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PlanCard } from '../components/PlanCard';
 import { AppBar } from '../components/AppBar';
 import { Footer } from '../components/Footer';
-
 
 const individualPlans = [
   {
@@ -98,6 +97,14 @@ export default function Plans() {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const plans = planType === 'individual' ? individualPlans : familyPlans;
+    const recommendedPlan = plans.find(plan => plan.isRecommended);
+    if (recommendedPlan) {
+      setSelectedPlan(recommendedPlan);
+    }
+  }, [planType]);
+
   const handleSelectPlan = (plan) => {
     setSelectedPlan(plan);
   };
@@ -115,53 +122,48 @@ export default function Plans() {
 
   return (
     <>
-    <AppBar/>
-        <div className="p-6">
-<div className="flex justify-center mb-6">
-  <div className="bg-gray-100 rounded-full p-1 flex items-center justify-between w-80">
-    <button
-      className={`flex-1 text-center px-4 py-2 font-semibold rounded-full transition-all duration-300 ${
-        planType === 'individual' ? 'bg-white shadow' : 'text-gray-500'
-      }`}
-      onClick={() => setPlanType('individual')}
-    >
-      Individual Plans
-    </button>
-    <button
-      className={`flex-1 text-center px-4 py-2 font-semibold rounded-full transition-all duration-300 ${
-        planType === 'family' ? 'bg-white shadow' : 'text-gray-500'
-      }`}
-      onClick={() => setPlanType('family')}
-    >
-      Family Plans
-    </button>
-  </div>
-</div>
-
-      <div>
-        <h2 className="text-2xl font-bold mb-4 text-center">{planType === 'individual' ? 'Individual Plans' : 'Family Plans'}</h2>
-        <div className="flex flex-wrap justify-center gap-4">
-          {plans.map((plan, index) => (
-            <PlanCard
-              key={index}
-              {...plan}
-              isSelected={selectedPlan?.title === plan.title}
-              onSelect={() => handleSelectPlan(plan)}
-            />
-          ))}
+      <AppBar />
+      <div className="p-6 mt-16">
+        <div className="flex justify-center mb-6">
+          <div className="bg-gray-100 rounded-full p-1 flex items-center justify-between w-80">
+            <button
+              className={`flex-1 text-center px-4 py-2 font-semibold rounded-full transition-all duration-300 ${planType === 'individual' ? 'bg-white shadow' : 'text-gray-500'}`}
+              onClick={() => setPlanType('individual')}
+            >
+              Individual Plans
+            </button>
+            <button
+              className={`flex-1 text-center px-4 py-2 font-semibold rounded-full transition-all duration-300 ${planType === 'family' ? 'bg-white shadow' : 'text-gray-500'}`}
+              onClick={() => setPlanType('family')}
+            >
+              Family Plans
+            </button>
+          </div>
         </div>
+
+        <div>
+          <h2 className="text-2xl font-bold mb-4 text-center">{planType === 'individual' ? 'Individual Plans' : 'Family Plans'}</h2>
+          <div className="flex flex-wrap justify-center gap-4">
+            {plans.map((plan, index) => (
+              <PlanCard
+                key={index}
+                {...plan}
+                isSelected={selectedPlan?.title === plan.title}
+                onSelect={() => handleSelectPlan(plan)}
+              />
+            ))}
+          </div>
+        </div>
+
+        {selectedPlan && (
+          <div className="mt-6 flex justify-center">
+            <button onClick={handlePayNow} className="px-6 py-2 bg-green-700 text-white font-semibold rounded-lg">
+              Pay Now ₹{selectedPlan.price}
+            </button>
+          </div>
+        )}
       </div>
-
-      {selectedPlan && (
-        <div className="mt-6 flex justify-center">
-          <button onClick={handlePayNow} className="px-6 py-2 bg-green-700 text-white font-semibold rounded-lg">
-            Pay Now ₹{selectedPlan.price}
-          </button>
-        </div>
-      )}
-    </div>
-    <Footer/>
+      <Footer />
     </>
-
   );
 }

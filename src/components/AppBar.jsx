@@ -28,16 +28,16 @@ export const AppBar = () => {
     };
 
     return (
-        <div className="fixed bg-white top-0 left-0 right-0 z-50 flex justify-between items-center p-4 lg:px-24">
+        <div className="fixed bg-white top-0 left-0 right-0 z-50 flex justify-between items-center p-1 lg:px-20">
             <Link to="/">
                 <div className="flex items-center">
-                    <img className="h-10" src="/logo1.jpg" alt="Logo 1" />
-                    <img className="h-10" src="/logo2.png" alt="Logo 2" />
+                    <img className="h-14" src="/logo1.jpg" alt="Logo 1" />
+                    <img className="h-20" src="/newlogo.jpg" alt="Logo 2" />
                 </div>
             </Link>
             <div className="hidden md:flex space-x-6">
                 <a href="/" className="font-medium hover:text-blue-800 transition duration-300 cursor-pointer flex justify-center flex-col">Home</a>
-                <a href="#services" onClick={handleScroll} className="font-medium hover:text-blue-800 transition duration-300 cursor-pointer flex justify-center flex-col">Services</a>
+                {/* <a href="#services" onClick={handleScroll} className="font-medium hover:text-blue-800 transition duration-300 cursor-pointer flex justify-center flex-col">Services</a> */}
                 <Link to="/hospitals" className="font-medium hover:text-blue-800 transition duration-300 cursor-pointer flex justify-center flex-col">Hospitals</Link>
                 <Link to="/plans" className="font-medium hover:text-blue-800 transition duration-300 cursor-pointer flex justify-center flex-col">Plans</Link>
                 {/* <Link to="/card" className="font-medium hover:text-blue-800 transition duration-300 cursor-pointer flex justify-center flex-col">Card</Link> */}
@@ -55,7 +55,7 @@ export const AppBar = () => {
                         </div>
                         </>
                     ) : (
-                        <Link to="/signup">
+                        <Link to="/signin">
                             <button type="button" className="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
                                 Already a member?
                             </button>

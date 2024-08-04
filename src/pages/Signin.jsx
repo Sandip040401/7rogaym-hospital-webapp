@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';
+import { AppBar } from '../components/AppBar';
+import { Footer } from '../components/Footer';
 
 export default function Signin() {
   const [form, setForm] = useState({
@@ -38,7 +40,7 @@ export default function Signin() {
         localStorage.setItem('token', token);
         toast.success('Sign-in successful!');
         // Redirect to plans page
-        window.location.href = '/'; // Replace with your desired URL
+        window.location.href = '/dashboard'; // Replace with your desired URL
       } else {
         const error = await response.text();
         toast.error(`Invalid email or password`);
@@ -51,6 +53,8 @@ export default function Signin() {
   };
 
   return (
+    <>
+    <AppBar/>
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
     <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
       <div className="w-full max-w-md p-8 space-y-8 bg-white shadow-lg rounded-lg">
@@ -115,5 +119,7 @@ export default function Signin() {
         </div>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
@@ -74,7 +74,7 @@ const Payment = ({ setSubscriptionStatus }) => {
           if (result.data.status === 'success') {
             toast.success('Payment Successful please go to the home page to access the dashboard');
             setSubscriptionStatus('active');
-            navigate('/'); // Redirect to home page
+            navigate('/dashboard'); // Redirect to home page
           } else {
             toast.error('Payment Failed');
             navigate("/")
@@ -97,8 +97,13 @@ const Payment = ({ setSubscriptionStatus }) => {
   }, [plan, backendUrl, setSubscriptionStatus, navigate]);
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <div className='min-h-full mt-72 overflow-hidden'>
+    <div className="flex justify-center items-center">
       <h2>Processing Payment...</h2>
+    </div>
+    <div className='flex justify-center'>
+      <h2><Link to='/dashboard' className='text-blue-500'>Click here</Link>  to go to the Dashboard if not redirected</h2>
+    </div>
     </div>
   );
 };

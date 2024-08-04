@@ -6,6 +6,7 @@ import { Footer } from "../components/Footer";
 import { HowitWorks } from "../components/HowItWorks";
 import { JoinUs } from "../components/JoinUs";
 import { OurPartners } from "../components/OurPartners";
+import PlansHome from "../components/PlansHome";
 import { Services } from "../components/Services";
 
 
@@ -17,6 +18,10 @@ export default function LandingPage(){
             <Services/>
             <HowitWorks/>
             <OurPartners/>
+            <div className="flex justify-center font-bold text-4xl mt-12">
+                Our Plans
+            </div>
+            <PlansHome/>
             <JoinUs/>
             <AboutUs/>
             <FAQ/>

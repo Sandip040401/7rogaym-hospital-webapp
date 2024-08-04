@@ -17,7 +17,7 @@ export const HowitWorks = () => {
                     </div>
                     <div className="flex justify-center md:justify-start items-center text-lg">
                         <p className="bg-white p-6 rounded-lg shadow-lg">
-                            <span className="text-xl font-bold text-emerald-600">Becoming a member</span> is <span className="text-xl font-bold">super easy</span> and <span className="text-xl font-bold">affordable</span>. Simply visit our registration page and provide us with some basic information or you can just ask one of our <span className="text-xl font-bold text-emerald-600">field executives</span>.
+                            <span className="text-xl font-bold text-emerald-600">Becoming a member</span> is <span className="text-xl font-bold">super easy</span> and <span className="text-xl font-bold">affordable</span>. Simply visit our registration page and provide us with some basic information or you can just ask one of our <span className="text-xl font-bold text-emerald-600">field executives</span>. <a href="/plans" className='text-xl font-bold text-blue-600'>Join Now</a>
                         </p>
                     </div>
                 </div>

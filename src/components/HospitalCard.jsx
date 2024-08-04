@@ -31,7 +31,7 @@ export const HospitalCard = ({ hospital }) => {
     const borderColor = borderColors[Math.floor(Math.random() * borderColors.length)];
 
     return (
-        <div className={`shadow-lg ${borderColor} border-t-2 border-r-4 border-b-4 rounded-xl max-w-sm p-4 md:p-6 flex flex-col items-start transform transition-transform duration-300 hover:scale-105 bg-white`}>
+        <div className={`shadow-lg ${borderColor} border-t-2 border-r-4 border-b-4 rounded-xl max-w-sm p-4 md:p-6 flex flex-col items-start bg-white`} style={{ width: '500px', height: '600px' }}>
             <div className="w-full h-32 md:h-48 relative mb-4 overflow-hidden rounded-t-xl">
                 <img src={image} alt={name} className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" />
             </div>
@@ -74,7 +74,7 @@ export const HospitalCard = ({ hospital }) => {
                     <div className="text-center">
                         <p className="font-semibold text-gray-700">Diagnostic</p>
                         <p className="text-gray-900">{discounts.diagnostic || 'N/A'}%</p>
-                    </div>
+                        </div>
                 </div>
             </div>
         </div>

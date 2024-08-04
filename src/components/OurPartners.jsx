@@ -4,8 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
-import 'swiper/css/autoplay';
+import 'swiper/css/autoplay'; // Ensure this is imported
 
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import { Link } from 'react-router-dom';
@@ -65,19 +64,19 @@ export const OurPartners = () => {
                 <Swiper
                     modules={[Navigation, Pagination, Autoplay]}
                     loop={true}
-                    speed={600}
+                    speed={500}
                     pagination={{ clickable: true }}
                     centeredSlides={true}
                     grabCursor={true}
                     slidesPerView={3}
                     spaceBetween={30}
-                    autoplay={{ delay: 1000, disableOnInteraction: false }}
-                    navigation={{ prevEl: prevRef.current, nextEl: nextRef.current }}
-                    onInit={(swiper) => {
-                        swiper.params.navigation.prevEl = prevRef.current;
-                        swiper.params.navigation.nextEl = nextRef.current;
-                        swiper.navigation.init();
-                        swiper.navigation.update();
+                    autoplay={{ 
+                        delay: 3000, // Adjust the delay as needed
+                        disableOnInteraction: false // Ensure autoplay continues even after user interaction
+                    }}
+                    navigation={{ 
+                        prevEl: prevRef.current, 
+                        nextEl: nextRef.current 
                     }}
                     breakpoints={{
                         320: {
