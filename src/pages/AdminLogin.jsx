@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import axios from 'axios';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 export default function AdminLogin() {
     const [email, setEmail] = useState('');
@@ -16,6 +14,7 @@ export default function AdminLogin() {
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
     const navigate = useNavigate();
     const { login } = useAuth();
 
@@ -24,13 +23,14 @@ export default function AdminLogin() {
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setError('');
+        setSuccess('');
         try {
             await login(email, password);
-            toast.success('Login successful');
-            navigate('/admin-dashboard'); // Ensure this route is correctly defined
+            setSuccess('Login successful');
+            navigate('/loading'); // Ensure this route is correctly defined
         } catch (error) {
             setError(error.response?.data?.message || 'Login failed');
-            toast.error(error.response?.data?.message || 'Login failed');
         } finally {
             setLoading(false);
         }
@@ -40,18 +40,20 @@ export default function AdminLogin() {
         e.preventDefault();
         setIsForgotPassword(true);
         setError('');
+        setSuccess('');
     };
 
     const handleSendOtp = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setError('');
+        setSuccess('');
         try {
             await axios.post(`${backendUrl}/api/admin/send-otp`, { email });
             setOtpSent(true);
-            toast.success('OTP sent successfully');
+            setSuccess('OTP sent successfully');
         } catch (error) {
             setError(error.response?.data?.message || 'Failed to send OTP');
-            toast.error(error.response?.data?.message || 'Failed to send OTP');
         } finally {
             setLoading(false);
         }
@@ -60,13 +62,14 @@ export default function AdminLogin() {
     const handleVerifyOtp = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setError('');
+        setSuccess('');
         try {
             await axios.post(`${backendUrl}/api/admin/verify-otp`, { email, otp });
             setOtpVerified(true);
-            toast.success('OTP verified successfully');
+            setSuccess('OTP verified successfully');
         } catch (error) {
             setError(error.response?.data?.message || 'Failed to verify OTP');
-            toast.error(error.response?.data?.message || 'Failed to verify OTP');
         } finally {
             setLoading(false);
         }
@@ -75,17 +78,18 @@ export default function AdminLogin() {
     const handleUpdatePassword = async (e) => {
         e.preventDefault();
         if (newPassword !== confirmNewPassword) {
-            toast.error('Passwords do not match');
+            setError('Passwords do not match');
             return;
         }
         setLoading(true);
+        setError('');
+        setSuccess('');
         try {
             await axios.post(`${backendUrl}/api/admin/update-password`, { email, newPassword });
-            toast.success('Password updated successfully');
+            setSuccess('Password updated successfully');
             navigate('/admin'); // Redirect to the login page or a different page
         } catch (error) {
             setError(error.response?.data?.message || 'Failed to update password');
-            toast.error(error.response?.data?.message || 'Failed to update password');
         } finally {
             setLoading(false);
         }
@@ -97,7 +101,18 @@ export default function AdminLogin() {
                 <h2 className="text-2xl font-bold mb-6 text-center">
                     {isForgotPassword ? (otpVerified ? 'Update Password' : 'Forgot Password') : 'Admin Login'}
                 </h2>
-                {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+                {error && (
+                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <strong className="font-bold">Error! </strong>
+                        <span className="block sm:inline">{error}</span>
+                    </div>
+                )}
+                {success && (
+                    <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <strong className="font-bold">Success! </strong>
+                        <span className="block sm:inline">{success}</span>
+                    </div>
+                )}
                 <form onSubmit={isForgotPassword ? (otpVerified ? handleUpdatePassword : (otpSent ? handleVerifyOtp : handleSendOtp)) : handleLogin}>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">

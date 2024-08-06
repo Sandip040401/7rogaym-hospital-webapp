@@ -69,7 +69,7 @@ const HealthCard = ({ member }) => {
           <img src="/logo1.jpg" alt="" className='h-20 opacity-25' />
         </div>
         <div className='absolute' style={{ left: '270px', top: '68px' }}>
-          <p className='text-custom1 font-medium'>{capitalizeFirstLetter(member?.abhaId)}</p>
+          <p className='text-custom1 font-medium'>7&nbsp;007&nbsp;007</p>
         </div>
         <div className='absolute' style={{ top: '90px', left: '230px' }}>
           <img src="/barcode.png" className='h-6' alt="" />

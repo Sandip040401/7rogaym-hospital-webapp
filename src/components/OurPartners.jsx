@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import 'swiper/css/autoplay'; // Ensure this is imported
+import 'swiper/css/autoplay';
 
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import { Link } from 'react-router-dom';
@@ -23,13 +23,13 @@ export const OurPartners = () => {
                     const transformedData = response.data.data
                         .filter(hospital => hospital.status === "ENABLE")
                         .map(hospital => ({
-                            image: hospital.images[0] || '/hospital.png', // Assuming the first image is the main one
+                            image: hospital.images[0] || '/hospital.png',
                             name: hospital.entity_name,
                             address: hospital.address,
                             city: hospital.city,
                             state: hospital.state,
                             zip: hospital.pincode,
-                            phone: hospital.tel_no || hospital.mobile_no, // Use tel_no if available, otherwise mobile_no
+                            phone: hospital.tel_no || hospital.mobile_no,
                             discounts: {
                                 ipd: hospital.discount_ipd,
                                 opd: hospital.discount_opd,
@@ -60,8 +60,10 @@ export const OurPartners = () => {
                     We have partnered with some of the <span className="font-bold">best hospitals and clinics</span> across the country to provide quality healthcare services to our members. Our partner hospitals and clinics are carefully selected based on their <span className="font-bold">reputation for quality care, advanced technology,</span> and <span className="font-bold">experienced medical staff</span>.
                 </p>
             </div>
-            <div className="ml-4 px-10 mt-12 md:px-12 relative">
+            <div className="lg:ml-10 lg:px-10 px-2 mt-12 md:px-12 relative">
                 <Swiper
+                    className='lg:ml-8 rounded-3xl'
+                    key={`${prevRef.current ? 'initialized' : 'not-initialized'}`}
                     modules={[Navigation, Pagination, Autoplay]}
                     loop={true}
                     speed={500}
@@ -70,13 +72,17 @@ export const OurPartners = () => {
                     grabCursor={true}
                     slidesPerView={3}
                     spaceBetween={30}
-                    autoplay={{ 
-                        delay: 3000, // Adjust the delay as needed
-                        disableOnInteraction: false // Ensure autoplay continues even after user interaction
+                    autoplay={{
+                        delay: 2000,
+                        disableOnInteraction: false
                     }}
-                    navigation={{ 
-                        prevEl: prevRef.current, 
-                        nextEl: nextRef.current 
+                    navigation={{
+                        prevEl: prevRef.current,
+                        nextEl: nextRef.current
+                    }}
+                    onBeforeInit={(swiper) => {
+                        swiper.params.navigation.prevEl = prevRef.current;
+                        swiper.params.navigation.nextEl = nextRef.current;
                     }}
                     breakpoints={{
                         320: {
@@ -99,12 +105,12 @@ export const OurPartners = () => {
                         </SwiperSlide>
                     ))}
                 </Swiper>
-                <div ref={prevRef} className="custom-swiper-button-prev swiper-button-prev text-white"></div>
-                <div ref={nextRef} className="custom-swiper-button-next swiper-button-next text-white"></div>
+                <div ref={prevRef} className="h-16 custom-swiper-button-prev swiper-button-prev text-white absolute top-1/2 left-2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 p-2 rounded-full cursor-pointer hover:bg-opacity-75 transition duration-300 shadow-lg"></div>
+                <div ref={nextRef} className="h-16 custom-swiper-button-next swiper-button-next text-white absolute top-1/2 right-2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 p-2 rounded-full cursor-pointer hover:bg-opacity-75 transition duration-300 shadow-lg"></div>
             </div>
             <div className="flex justify-center mt-6">
                 <Link to="/hospitals">
-                    <button className="bg-teal-600 text-white px-6 py-2 rounded-md hover:bg-teal-700 transition duration-300">
+                    <button className="bg-teal-600 text-xl text-white px-4 py-2 text-sm rounded-md hover:bg-teal-700 transition duration-300 shadow-lg">
                         Show More
                     </button>
                 </Link>

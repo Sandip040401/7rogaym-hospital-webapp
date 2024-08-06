@@ -16,6 +16,8 @@ const Admin = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [healthCards, setHealthCards] = useState([]);
   const [showHealthCards, setShowHealthCards] = useState(false);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+  const [loadingCards, setLoadingCards] = useState(false);
   const baseUrl = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
   const cardRefs = useRef([]);
@@ -31,6 +33,8 @@ const Admin = () => {
         setUsers(response.data);
       } catch (error) {
         toast.error('Failed to fetch users');
+      } finally {
+        setLoadingUsers(false);
       }
     };
 
@@ -39,6 +43,7 @@ const Admin = () => {
 
   useEffect(() => {
     if (selectedUser) {
+      setLoadingCards(true);
       const fetchHealthCards = async () => {
         try {
           const response = await axios.get(`${baseUrl}/api/admin/users/${selectedUser.email}/members`, {
@@ -49,6 +54,8 @@ const Admin = () => {
           setHealthCards(response.data);
         } catch (error) {
           toast.error('Failed to fetch health cards');
+        } finally {
+          setLoadingCards(false);
         }
       };
 
@@ -122,6 +129,10 @@ const Admin = () => {
       pdf.save(`${healthCards[index].name}_card.pdf`);
     }
   };
+
+  if (loadingUsers) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="container mx-auto p-4">
@@ -220,21 +231,25 @@ const Admin = () => {
           </div>
           {showHealthCards && (
             <div className="bg-white p-6 rounded-lg shadow-md">
-              {healthCards.map((member, index) => (
-                <div key={member._id} ref={(el) => (cardRefs.current[index] = el)} className="mb-6" id={`card-${member._id}`}>
-                  {selectedUser.selectedPlan.includes('Solo') ? (
-                    <div className='flex'>
-                      <PremiumHealthCard member={member} />
-                      <BackCard member={member} />
-                    </div>
-                  ) : (
-                    <div className='flex'>
-                      <HealthCard member={member} />
-                      <BackCard member={member} />
-                    </div>
-                  )}
-                </div>
-              ))}
+              {loadingCards ? (
+                <div>Loading health cards...</div>
+              ) : (
+                healthCards.map((member, index) => (
+                  <div key={member._id} ref={(el) => (cardRefs.current[index] = el)} className="mb-6" id={`card-${member._id}`}>
+                    {selectedUser.selectedPlan.includes('Solo') ? (
+                      <div className='flex'>
+                        <PremiumHealthCard member={member} />
+                        <BackCard member={member} />
+                      </div>
+                    ) : (
+                      <div className='flex'>
+                        <HealthCard member={member} />
+                        <BackCard member={member} />
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
             </div>
           )}
         </div>

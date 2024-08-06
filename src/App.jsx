@@ -16,11 +16,14 @@ import { AuthProvider } from './AuthContext';
 import ProtectedRoute, { SubscriptionProtectedRoute } from './ProtectedRoute';
 import Admin from './pages/Admin';
 import { Card } from './pages/Card';
+import ScrollToTop from './ScrollToTop';
+import AdminDashboard from './pages/AdminDashboard';
 
 export default function App() {
     return (
         <AuthProvider>
             <BrowserRouter>
+                <ScrollToTop/>
                 <Routes>
                     <Route path="/" element={<LandingPage />} />
                     <Route path="/hospitals" element={<HospitalPage />} />
@@ -41,6 +44,7 @@ export default function App() {
                     <Route path="/card" element={<Card />} />
                     <Route path="/payment" element={<Payment />} />
                     <Route path="/admin" element={<AdminLogin />} />
+                    <Route path="/loading" element={<AdminDashboard />} />
                     <Route
                         path="/admin-dashboard"
                         element={

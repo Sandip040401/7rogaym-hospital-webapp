@@ -14,7 +14,7 @@ export const Services = () => {
             title: "Heart Diseases",
             description: "Comprehensive care for heart conditions, including diagnostics, treatment, and rehabilitation.",
             color: "bg-purple-100 hover:bg-purple-200",
-            textSize: "text-2xl",
+            textSize: "text-lg lg:text-2xl",
             descSize: "text-md"
         },
         {
@@ -22,7 +22,7 @@ export const Services = () => {
             title: "General Surgery",
             description: "Expert surgical procedures covering a wide range of medical conditions with advanced techniques.",
             color: "bg-red-100 hover:bg-red-200",
-            textSize: "text-2xl",
+            textSize: "text-lg lg:text-2xl",
             descSize: "text-md"
         },
         {
@@ -30,7 +30,7 @@ export const Services = () => {
             title: "Dental Problems",
             description: "Advanced dental treatments including preventive, restorative, and cosmetic dentistry.",
             color: "bg-orange-100 hover:bg-orange-200",
-            textSize: "text-2xl",
+            textSize: "text-lg lg:text-2xl",
             descSize: "text-md"
         },
         {
@@ -38,7 +38,7 @@ export const Services = () => {
             title: "Diagnostic",
             description: "Accurate diagnostic services with state-of-the-art equipment for early detection and treatment.",
             color: "bg-yellow-100 hover:bg-yellow-200",
-            textSize: "text-2xl",
+            textSize: "text-lg lg:text-2xl",
             descSize: "text-md"
         }
     ];
@@ -49,7 +49,7 @@ export const Services = () => {
             title: "Medicine",
             description: "Wide range of medicines available for various health conditions, ensuring quality and affordability.",
             color: "bg-blue-100 hover:bg-blue-200",
-            textSize: "text-2xl",
+            textSize: "text-lg lg:text-2xl",
             descSize: "text-md"
         },
         {
@@ -57,7 +57,7 @@ export const Services = () => {
             title: "Neurology",
             description: "Specialized neurological care for conditions affecting the brain, spinal cord, and nerves.",
             color: "bg-green-100 hover:bg-green-200",
-            textSize: "text-2xl",
+            textSize: "text-lg lg:text-2xl",
             descSize: "text-md"
         },
         {
@@ -65,7 +65,7 @@ export const Services = () => {
             title: "Eye Care",
             description: "Comprehensive eye care services including vision tests, treatments, and surgeries.",
             color: "bg-pink-100 hover:bg-pink-200",
-            textSize: "text-2xl",
+            textSize: "text-lg lg:text-2xl",
             descSize: "text-md"
         },
         {
@@ -73,7 +73,7 @@ export const Services = () => {
             title: "Orthopaedics",
             description: "Advanced orthopaedic treatments for bone, joint, and muscle conditions, including surgeries and rehabilitation.",
             color: "bg-purple-100 hover:bg-purple-200",
-            textSize: "text-2xl",
+            textSize: "text-lg lg:text-2xl",
             descSize: "text-md"
         }
     ];
@@ -85,11 +85,11 @@ export const Services = () => {
                 <span className="text-teal-500 lg:text-4xl pl-2">Services</span>
                 <span className="flex flex-col text-black justify-center pl-2">We Provide</span> 
             </div>
-            <div className="flex justify-center px-48">
-                <BannerCards data={servicesData1} height="h-80" width="w-64" feature={true} />
+            <div className="flex justify-center lg:px-48">
+                <BannerCards data={servicesData1} height="h-70 lg:h-80" width="w-40 lg:w-64" feature={true} />
             </div>
-            <div className="flex justify-center px-48">
-                <BannerCards data={servicesData2} height="h-80" width="w-64" feature={true} />
+            <div className="flex justify-center lg:px-48">
+                <BannerCards data={servicesData2} height="h-70 lg:h-80" width="w-40 lg:w-64" feature={true} />
             </div>
             <div className="flex justify-center pt-14">
                 <button 

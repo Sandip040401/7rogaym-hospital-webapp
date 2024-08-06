@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMapMarkerAlt, faPhoneAlt } from '@fortawesome/free-solid-svg-icons';
+import { faMapMarkerAlt, faPhoneAlt, faArrowRight } from '@fortawesome/free-solid-svg-icons'; // Import the new arrow icon
 
 export const HospitalCard = ({ hospital }) => {
     const {
@@ -31,7 +31,7 @@ export const HospitalCard = ({ hospital }) => {
     const borderColor = borderColors[Math.floor(Math.random() * borderColors.length)];
 
     return (
-        <div className={`shadow-lg ${borderColor} border-t-2 border-r-4 border-b-4 rounded-xl max-w-sm p-4 md:p-6 flex flex-col items-start bg-white`} style={{ width: '500px', height: '600px' }}>
+        <div className={`shadow-lg ${borderColor} border-t-2 border-r-8 border-b-4 rounded-tl-xl rounded-tr-3xl rounded-br-xl rounded-bl-xl max-w-sm p-4 md:p-6 flex flex-col items-start bg-white`} style={{ width: '500px', height: '600px' }}>
             <div className="w-full h-32 md:h-48 relative mb-4 overflow-hidden rounded-t-xl">
                 <img src={image} alt={name} className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" />
             </div>
@@ -40,17 +40,17 @@ export const HospitalCard = ({ hospital }) => {
                 <div className="text-gray-600 text-sm font-semibold">{uid}</div>
             </div>
             <div className="font-bold text-xl md:text-2xl text-gray-800 mb-2">{name}</div>
-            <div className="text-gray-600 mb-1 md:mb-2">{address}</div>
+            <div className="text-gray-600 mb-1 md:mb-2"><FontAwesomeIcon icon={faMapMarkerAlt} /> &nbsp;{address}</div>
             <div className="text-gray-600 mb-1 md:mb-2">{city}, {state}, {zip}</div>
             <div className="flex justify-between items-center text-blue-600 mt-2 font-medium mb-2 md:mb-4 w-full">
                 <div className="flex items-center">
-                    <FontAwesomeIcon icon={faPhoneAlt} className="mr-2" />
+                    <FontAwesomeIcon icon={faPhoneAlt} className="mr-2 transform rotate-90" /> {/* Rotate the phone icon */}
                     <span>{phone}</span>
                 </div>
                 {map_link && (
-                    <a href={map_link} target="_blank" rel="noopener noreferrer" className="ml-2 text-gray-600 flex items-center">
+                    <a href={map_link} target="_blank" rel="noopener noreferrer" className="ml-2 text-orange-600 flex items-center">
                         <span className="mr-1">Direction</span>
-                        <FontAwesomeIcon icon={faMapMarkerAlt} />
+                        <FontAwesomeIcon icon={faArrowRight} /> {/* Change to orange arrow icon */}
                     </a>
                 )}
             </div>
@@ -74,7 +74,7 @@ export const HospitalCard = ({ hospital }) => {
                     <div className="text-center">
                         <p className="font-semibold text-gray-700">Diagnostic</p>
                         <p className="text-gray-900">{discounts.diagnostic || 'N/A'}%</p>
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -4,7 +4,7 @@ import { faUserPlus, faIdCard, faHospital } from '@fortawesome/free-solid-svg-ic
 
 export const HowitWorks = () => {
     return (
-        <div className="pt-10 h-full w-full bg-emerald-100 px:10 lg:px-20 pb-16">
+        <div className="pt-10 h-full w-full bg-emerald-100 px:10 lg:px-20 pb-10 lg:pb-16">
             <div className="flex justify-center text-3xl font-bold text-black mb-8">
                 <div className="text-5xl text-emerald-600">How</div>
                 <div className="flex flex-col justify-center ml-2">it</div>

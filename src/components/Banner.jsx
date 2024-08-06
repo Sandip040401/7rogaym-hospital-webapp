@@ -30,11 +30,11 @@ export const Banner = () => {
     ];
     
     return (
-        <div className="bg-[url('/background.jpg')] bg-no-repeat bg-cover pb-10 h-full w-full pt-10 mt-14 md:mt-20 px-6 md:px-36">
+        <div className="bg-[url('/background.jpg')] bg-no-repeat bg-cover pb-10 h-full w-full pt-14 mt-20 md:mt-20 px-6 md:px-36">
             <div className="flex flex-col md:flex-row">
                 <div className="flex flex-col justify-center items-center md:items-start">
                     <div className="font-normal text-4xl md:text-5xl text-center md:text-left">Healthcare that</div>
-                    <div className="font-semibold text-4xl md:text-6xl mt-4 text-center md:text-left">treats you right</div>
+                    <div className="font-semibold text-4xl md:text-6xl mt-2 text-center md:text-left">treats you right</div>
                     <div className="mt-6 md:mt-16">
                          <Link to='/plans'> <button type="button" className="h-12 w-full md:w-48 flex items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-m px-5 py-2.5 text-center mb-2">
                                 Check Prices
@@ -46,10 +46,14 @@ export const Banner = () => {
                     </div>
                 </div>
                 <div className="flex justify-center mt-12 lg:mt-8 md:mt-0 md:pl-8 lg:pl-96">
-                    <img src="/healthcard.png" className="transform transition-transform duration-300 hover:rotate-3 hover:scale-105 w-64 md:w-auto" alt="Health Card" />
+                <div className="relative h-60 w-68 md:w-auto rounded-xl perspective">
+                    <img src="/cardfront.png" className="h-full w-full rounded-xl transform transition-transform duration-300 hover:rotate-y-180" alt="Health Card Front" />
+                    <img src="/cardback.png" className="absolute top-0 left-0 h-full w-full rounded-xl transform rotate-y-180 transition-transform duration-300 opacity-0 hover:opacity-100" alt="Health Card Back" />
                 </div>
+                </div>
+
             </div>
-            <div className="mt-12 md:mt-20">
+            <div className="hidden md:block mt-12 md:mt-12">
                 <BannerCards data={servicesData} />
             </div>
         </div>

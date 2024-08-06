@@ -4,7 +4,6 @@ import { useAuth } from './AuthContext';
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('admintoken'); // Check for the admin token
-
   if (!token) {
       return <Navigate to="/admin" />;
   }

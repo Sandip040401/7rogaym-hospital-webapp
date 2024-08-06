@@ -3,7 +3,7 @@ import axios from 'axios';
 import { HospitalCard } from "./HospitalCard";
 import { ClipLoader } from 'react-spinners';
 
-export const Hospitals = () => {
+export const Hospitals = ({ searchQuery }) => {
     const [hospitals, setHospitals] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -15,13 +15,13 @@ export const Hospitals = () => {
                     const transformedData = response.data.data
                         .filter(hospital => hospital.status === "ENABLE")
                         .map(hospital => ({
-                            image: hospital.images[0] || '/hospital.png', // Assuming the first image is the main one
+                            image: hospital.images[0] || '/hospital.png',
                             name: hospital.entity_name,
                             address: hospital.address,
                             city: hospital.city,
                             state: hospital.state,
                             zip: hospital.pincode,
-                            phone: hospital.tel_no || hospital.mobile_no, // Use tel_no if available, otherwise mobile_no
+                            phone: hospital.tel_no || hospital.mobile_no,
                             discounts: {
                                 ipd: hospital.discount_ipd,
                                 opd: hospital.discount_opd,
@@ -44,13 +44,20 @@ export const Hospitals = () => {
         fetchHospitals();
     }, []);
 
+    const filteredHospitals = hospitals.filter(hospital =>
+        hospital.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        hospital.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        hospital.state.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        hospital.address.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center mt-28 px-10 lg:px-20 pb-20">
+        <div className="min-h-screen flex flex-col items-center justify-center mt-8 px-10 lg:px-20 pb-20">
             {loading ? (
                 <ClipLoader size={50} color={"#123abc"} loading={loading} />
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center w-full">
-                    {hospitals.map((hospital, index) => (
+                    {filteredHospitals.map((hospital, index) => (
                         <HospitalCard key={index} hospital={hospital} />
                     ))}
                 </div>
