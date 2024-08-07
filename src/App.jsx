@@ -18,6 +18,7 @@ import Admin from './pages/Admin';
 import { Card } from './pages/Card';
 import ScrollToTop from './ScrollToTop';
 import AdminDashboard from './pages/AdminDashboard';
+import { Gallery } from './components/Gallery';
 
 export default function App() {
     return (
@@ -45,6 +46,7 @@ export default function App() {
                     <Route path="/payment" element={<Payment />} />
                     <Route path="/admin" element={<AdminLogin />} />
                     <Route path="/loading" element={<AdminDashboard />} />
+                    <Route path="/gallery" element={<Gallery />} />
                     <Route
                         path="/admin-dashboard"
                         element={

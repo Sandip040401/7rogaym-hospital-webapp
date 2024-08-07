@@ -42,6 +42,7 @@ export const AppBar = () => {
                 <Link to="/plans" className="font-medium hover:text-blue-800 transition duration-300 cursor-pointer flex justify-center flex-col">Plans</Link>
                 {/* <Link to="/card" className="font-medium hover:text-blue-800 transition duration-300 cursor-pointer flex justify-center flex-col">Card</Link> */}
                 <a href="#contact" onClick={handleScroll} className="font-medium hover:text-blue-800 transition duration-300 cursor-pointer flex justify-center flex-col">Contact Us</a>
+                <a href="/gallery" className="font-medium hover:text-blue-800 transition duration-300 cursor-pointer flex justify-center flex-col">Gallery</a>
                 <div className="pl-4 cursor-pointer">
                     {userName ? (
                         <>
