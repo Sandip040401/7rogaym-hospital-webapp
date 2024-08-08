@@ -63,6 +63,10 @@ export const AppBar = () => {
                         </Link>
                     )}
                 </div>
+                <div>
+            {/* <div id="google_translate_element" className="translate-box"></div> */}
+
+                </div>
             </div>
             <div className="md:hidden flex items-center">
                 <button className="mobile-menu-button" onClick={() => setMenuOpen(!menuOpen)}>

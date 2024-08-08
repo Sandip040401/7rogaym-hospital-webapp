@@ -38,7 +38,7 @@ const PreminumHealthCard = ({ member }) => {
           </div>
           <div>
             <p className='text-custom font-medium text-slate-500 mt-1'>Father/Husband</p>
-            <p className='text-custom1 font-medium'>{capitalizeFirstLetter(member?.relation)}</p>
+            <p className='text-custom1 font-medium'>{capitalizeFirstLetter(member?.fatherName)}</p>
           </div>
           <div className='flex items-center mt-2'>
             <div>

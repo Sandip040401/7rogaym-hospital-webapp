@@ -7,7 +7,8 @@ import Notifications from '../components/Notifications';
 import Plans from '../components/Plans';
 
 export default function Dashboard() {
-    const [selectedItem, setSelectedItem] = useState('home');
+    // Set 'managecard' as the default selected item
+    const [selectedItem, setSelectedItem] = useState('managecard');
     const { logout } = useAuth();
     const navigate = useNavigate();
 
@@ -32,7 +33,7 @@ export default function Dashboard() {
                 handleLogout();
                 return null;
             default:
-                return <Home />;
+                return <ManageCard />;
         }
     };
 
@@ -47,7 +48,7 @@ export default function Dashboard() {
                         { id: 'home', label: 'Home' },
                         { id: 'managecard', label: 'Manage Card' },
                         { id: 'notifications', label: 'Settings' },
-                        { id: 'plans', label: 'Plans' },
+                        { id: 'plans', label: 'Renew Plans' },
                         { id: 'logout', label: 'Logout', action: handleLogout },
                     ].map((item) => (
                         <li key={item.id} className={`px-6 py-2 hover:bg-gray-200 ${selectedItem === item.id ? 'bg-gray-200' : ''}`}>
