@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AppBar } from './AppBar';
+import { Footer } from './Footer';
 
 export const Gallery = () => {
   const [photos, setPhotos] = useState([]);
-  const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPhotos = async () => {
@@ -14,44 +16,13 @@ export const Gallery = () => {
         setPhotos(response.data);
       } catch (error) {
         toast.error('Failed to fetch photos');
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchPhotos();
   }, []);
-
-  const handleAddPhoto = async () => {
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/gallery`, formData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('admintoken')}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      setPhotos([...photos, response.data]);
-      setFile(null);
-      toast.success('Photo added successfully');
-    } catch (error) {
-      toast.error('Failed to add photo');
-    }
-  };
-
-  const handleDeletePhoto = async (id) => {
-    try {
-      await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/gallery/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('admintoken')}`
-        }
-      });
-      setPhotos(photos.filter(photo => photo._id !== id));
-      toast.success('Photo deleted successfully');
-    } catch (error) {
-      toast.error('Failed to delete photo');
-    }
-  };
 
   const arrayBufferToBase64 = (buffer) => {
     let binary = '';
@@ -61,45 +32,40 @@ export const Gallery = () => {
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Manage Gallery</h2>
-      <div className="mb-4 flex items-center">
-        <input
-          type="file"
-          onChange={(e) => setFile(e.target.files[0])}
-          className="border p-2 mr-2"
-        />
-        <button
-          onClick={handleAddPhoto}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Add Photo
-        </button>
-      </div>
-      <div className="grid grid-cols-6 gap-4 mb-4">
-        {photos.length > 0 ? (
-          photos.map((photo) => (
-            <div key={photo._id} className="relative border p-2 rounded border-gray-300">
-              <img
-                src={`data:${photo.contentType};base64,${arrayBufferToBase64(photo.image.data)}`}
-                alt="Gallery"
-                className="w-32 h-32 object-contain"
-              />
-              <button
-                onClick={() => handleDeletePhoto(photo._id)}
-                className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700"
-              >
-                Delete
-              </button>
+    <>
+      <AppBar />
+      <div className="bg-gradient-to-b from-gray-100 to-gray-200 min-h-screen pt-20 mt-10">
+        <div className="max-w-7xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+          <h2 className="text-4xl font-extrabold mb-8 text-center text-gray-800">Gallery</h2>
+
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="w-16 h-16 border-4 border-t-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
             </div>
-          ))
-        ) : (
-          <p className="col-span-6 text-center">No photos in backend</p>
-        )}
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-8">
+              {photos.length > 0 ? (
+                photos.map((photo) => (
+                  <div
+                    key={photo._id}
+                    className="relative overflow-hidden rounded-lg shadow-md transform transition duration-300 hover:scale-105"
+                  >
+                    <img
+                      src={`data:${photo.contentType};base64,${arrayBufferToBase64(photo.image.data)}`}
+                      alt="Gallery"
+                      className="w-full h-48 object-cover rounded-lg"
+                    />
+                  </div>
+                ))
+              ) : (
+                <p className="col-span-full text-center text-xl text-gray-600">No photos available</p>
+              )}
+            </div>
+          )}
+          <ToastContainer />
+        </div>
       </div>
-      <ToastContainer />
-    </div>
+      <Footer />
+    </>
   );
 };
-
-

@@ -28,12 +28,14 @@ export const HowitWorks = () => {
                         </p>
                     </div>
                     <div className="order-1 md:order-2 flex justify-center md:justify-start items-center">
-                        <FontAwesomeIcon icon={faIdCard} size="6x" className="text-emerald-600 lg:ml-8" />
+                        {/* <FontAwesomeIcon icon={faIdCard} size="6x" className="text-emerald-600 lg:ml-8" /> */}
+                        <img src="/cardfront.png" className='h-60 rounded-3xl' alt="" srcset="" />
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                     <div className="flex justify-center md:justify-end items-center">
-                        <FontAwesomeIcon icon={faHospital} size="6x" className="text-emerald-600 lg:mr-8" />
+                        {/* <FontAwesomeIcon icon={faHospital} size="6x" className="text-emerald-600 lg:mr-8" /> */}
+                        <img src="/hospitalcard.png" className='h-72 rounded-3xl' alt="" srcset="" />
                     </div>
                     <div className="flex justify-center md:justify-start items-center text-lg">
                         <p className="bg-white p-6 rounded-lg shadow-lg">
