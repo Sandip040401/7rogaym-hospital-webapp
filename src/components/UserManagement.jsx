@@ -1,8 +1,5 @@
-// UserManagement.jsx
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import HealthCard from './HealthCard';
@@ -18,6 +15,7 @@ const UserManagement = ({ baseUrl, token }) => {
   const [showHealthCards, setShowHealthCards] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [loadingCards, setLoadingCards] = useState(false);
+  const [alert, setAlert] = useState({ type: '', message: '', visible: false });
   const cardRefs = useRef([]);
 
   useEffect(() => {
@@ -30,7 +28,7 @@ const UserManagement = ({ baseUrl, token }) => {
         });
         setUsers(response.data);
       } catch (error) {
-        toast.error('Failed to fetch users');
+        setAlert({ type: 'error', message: 'no users in backend', visible: true });
       } finally {
         setLoadingUsers(false);
       }
@@ -51,7 +49,7 @@ const UserManagement = ({ baseUrl, token }) => {
           });
           setHealthCards(response.data);
         } catch (error) {
-          toast.error('no health cards found');
+          setAlert({ type: 'error', message: 'No health cards found', visible: true });
         } finally {
           setLoadingCards(false);
         }
@@ -84,9 +82,9 @@ const UserManagement = ({ baseUrl, token }) => {
         )
       );
       setEditingUser(null);
-      toast.success('Subscription status updated successfully');
+      setAlert({ type: 'success', message: 'Subscription status updated successfully', visible: true });
     } catch (error) {
-      toast.error('Failed to update subscription status');
+      setAlert({ type: 'error', message: 'Failed to update subscription status', visible: true });
     }
   };
 
@@ -129,6 +127,11 @@ const UserManagement = ({ baseUrl, token }) => {
 
   return (
     <div>
+      {alert.visible && (
+        <div className={`mb-4 p-4 text-white rounded ${alert.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
+          {alert.message}
+        </div>
+      )}
       <div className="overflow-x-auto overflow-y-auto max-h-80 mb-4">
         <table className="min-w-full bg-white border border-gray-200">
           <thead>
@@ -241,7 +244,6 @@ const UserManagement = ({ baseUrl, token }) => {
           )}
         </div>
       )}
-      <ToastContainer />
     </div>
   );
 };

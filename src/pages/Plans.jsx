@@ -114,7 +114,11 @@ export default function Plans() {
     if (!token) {
       navigate('/signin');
     } else if (selectedPlan) {
-      navigate('/payment', { state: { plan: selectedPlan } });
+      navigate('/user-form', { 
+        state: { 
+          planDetails: { planName: selectedPlan.title, amount: selectedPlan.price },
+        }
+      });
     }
   };
 

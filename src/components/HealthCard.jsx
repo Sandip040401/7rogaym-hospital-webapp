@@ -41,7 +41,7 @@ const HealthCard = ({ member }) => {
             {member?.additionalMembers?.length > 0 ? (
               member.additionalMembers.map((additionalMember, index) => (
                 <p key={index} className='text-custom2 font-medium'>
-                  {capitalizeFirstLetter(additionalMember.memberName)} ({`${formatGender(additionalMember.memberGender)}/${additionalMember.memberAge || 'null'} Yrs`})
+                  {capitalizeFirstLetter(additionalMember.name)} ({`${formatGender(additionalMember.gender)}/${additionalMember.age || 'null'} Yrs`})
                 </p>
               ))
             ) : (

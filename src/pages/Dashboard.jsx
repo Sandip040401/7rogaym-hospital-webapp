@@ -21,8 +21,6 @@ export default function Dashboard() {
 
     const renderContent = () => {
         switch (selectedItem) {
-            case 'home':
-                return <Home />;
             case 'managecard':
                 return <ManageCard />;
             case 'notifications':
@@ -45,7 +43,6 @@ export default function Dashboard() {
                 </div>
                 <ul className="mt-4">
                     {[
-                        { id: 'home', label: 'Home' },
                         { id: 'managecard', label: 'Manage Card' },
                         { id: 'notifications', label: 'Settings' },
                         { id: 'plans', label: 'Renew Plans' },
