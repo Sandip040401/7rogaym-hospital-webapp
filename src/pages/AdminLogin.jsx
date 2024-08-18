@@ -2,16 +2,20 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import axios from 'axios';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function AdminLogin() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false); // To toggle password visibility
     const [isForgotPassword, setIsForgotPassword] = useState(false);
     const [otp, setOtp] = useState('');
     const [otpSent, setOtpSent] = useState(false);
     const [otpVerified, setOtpVerified] = useState(false);
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
+    const [passwordStrength, setPasswordStrength] = useState(''); // For password strength meter
+    const [showNewPassword, setShowNewPassword] = useState(false); // To toggle new password visibility
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -19,6 +23,14 @@ export default function AdminLogin() {
     const { login } = useAuth();
 
     const backendUrl = import.meta.env.VITE_BASE_URL;
+
+    // Password Strength Check
+    const checkPasswordStrength = (password) => {
+        if (password.length < 6) return 'Weak';
+        if (password.length >= 6 && password.length < 10) return 'Medium';
+        if (password.length >= 10) return 'Strong';
+        return '';
+    };
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -28,12 +40,22 @@ export default function AdminLogin() {
         try {
             await login(email, password);
             setSuccess('Login successful');
-            navigate('/loading'); // Ensure this route is correctly defined
+            navigate('/admin-dashboard');
         } catch (error) {
             setError(error.response?.data?.message || 'Login failed');
         } finally {
             setLoading(false);
         }
+    };
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+        setPasswordStrength(checkPasswordStrength(e.target.value));
+    };
+
+    const handleNewPasswordChange = (e) => {
+        setNewPassword(e.target.value);
+        setPasswordStrength(checkPasswordStrength(e.target.value));
     };
 
     const handleForgotPassword = (e) => {
@@ -87,7 +109,7 @@ export default function AdminLogin() {
         try {
             await axios.post(`${backendUrl}/api/admin/update-password`, { email, newPassword });
             setSuccess('Password updated successfully');
-            navigate('/admin'); // Redirect to the login page or a different page
+            navigate('/admin');
         } catch (error) {
             setError(error.response?.data?.message || 'Failed to update password');
         } finally {
@@ -129,34 +151,56 @@ export default function AdminLogin() {
                     </div>
                     {isForgotPassword ? (
                         otpVerified ? (
-                            <>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="newPassword">
-                                        New Password
-                                    </label>
-                                    <input
-                                        type="password"
-                                        id="newPassword"
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        value={newPassword}
-                                        onChange={(e) => setNewPassword(e.target.value)}
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirmNewPassword">
-                                        Confirm New Password
-                                    </label>
-                                    <input
-                                        type="password"
-                                        id="confirmNewPassword"
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        value={confirmNewPassword}
-                                        onChange={(e) => setConfirmNewPassword(e.target.value)}
-                                        required
-                                    />
-                                </div>
-                            </>
+<>
+    <div className="mb-4 relative">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="newPassword">
+            New Password
+        </label>
+        <div className="relative">
+            <input
+                type={showNewPassword ? 'text' : 'password'}
+                id="newPassword"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                value={newPassword}
+                onChange={handleNewPasswordChange}
+                required
+            />
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center top-1/2 transform -translate-y-1/2 cursor-pointer">
+                {showNewPassword ? (
+                    <FaEyeSlash onClick={() => setShowNewPassword(!showNewPassword)} />
+                ) : (
+                    <FaEye onClick={() => setShowNewPassword(!showNewPassword)} />
+                )}
+            </div>
+        </div>
+        <p className={`mt-2 text-sm ${passwordStrength === 'Weak' ? 'text-red-500' : passwordStrength === 'Medium' ? 'text-yellow-500' : 'text-green-500'}`}>
+            {passwordStrength && `Password Strength: ${passwordStrength}`}
+        </p>
+    </div>
+    <div className="mb-4 relative">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirmNewPassword">
+            Confirm New Password
+        </label>
+        <div className="relative">
+            <input
+                type={showNewPassword ? 'text' : 'password'}
+                id="confirmNewPassword"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                value={confirmNewPassword}
+                onChange={(e) => setConfirmNewPassword(e.target.value)}
+                required
+            />
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center top-1/2 transform -translate-y-1/2 cursor-pointer">
+                {showNewPassword ? (
+                    <FaEyeSlash onClick={() => setShowNewPassword(!showNewPassword)} />
+                ) : (
+                    <FaEye onClick={() => setShowNewPassword(!showNewPassword)} />
+                )}
+            </div>
+        </div>
+    </div>
+</>
+
                         ) : (
                             otpSent && (
                                 <div className="mb-6">
@@ -175,27 +219,40 @@ export default function AdminLogin() {
                             )
                         )
                     ) : (
-                        <div className="mb-6">
-                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-                                Password
-                            </label>
-                            <input
-                                type="password"
-                                id="password"
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                        </div>
+<div className="mb-6 relative">
+    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+        Password
+    </label>
+    <div className="relative">
+        <input
+            type={showPassword ? 'text' : 'password'}
+            id="password"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            value={password}
+            onChange={handlePasswordChange}
+            required
+        />
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer">
+            {showPassword ? (
+                <FaEyeSlash onClick={() => setShowPassword(!showPassword)} />
+            ) : (
+                <FaEye onClick={() => setShowPassword(!showPassword)} />
+            )}
+        </div>
+    </div>
+</div>
+
+
+
+
                     )}
                     <div className="flex items-center justify-between">
                         <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                             type="submit"
                             disabled={loading}
                         >
-                            {isForgotPassword ? (otpVerified ? 'Update Password' : (otpSent ? 'Verify OTP' : 'Send OTP')) : 'Sign In'}
+                            {loading ? 'Loading...' : isForgotPassword ? (otpVerified ? 'Update Password' : (otpSent ? 'Verify OTP' : 'Send OTP')) : 'Login'}
                         </button>
                         {!isForgotPassword && (
                             <button

@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { AppBar } from './AppBar';
-import { Footer } from './Footer';
 
 export const Gallery = () => {
   const [photos, setPhotos] = useState([]);
@@ -33,8 +31,7 @@ export const Gallery = () => {
 
   return (
     <>
-      <AppBar />
-      <div className="bg-gradient-to-b from-gray-100 to-gray-200 min-h-screen pt-20 mt-10">
+      <div className="bg-gradient-to-b from-gray-100 to-gray-200 min-h-[300px] mt-10 py-20">
         <div className="max-w-7xl mx-auto p-6 bg-white rounded-lg shadow-lg">
           <h2 className="text-4xl font-extrabold mb-8 text-center text-gray-800">Gallery</h2>
 
@@ -65,7 +62,6 @@ export const Gallery = () => {
           <ToastContainer />
         </div>
       </div>
-      <Footer />
     </>
   );
 };

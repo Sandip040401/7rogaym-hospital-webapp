@@ -37,9 +37,9 @@ export default function App() {
                     <Route
                         path="/dashboard"
                         element={
-                            <SubscriptionProtectedRoute>
+                            // <SubscriptionProtectedRoute>
                                 <Dashboard />
-                            </SubscriptionProtectedRoute>
+                            // </SubscriptionProtectedRoute>
                         }
                     />
                     <Route path="/plans" element={<Plans />} />
@@ -52,9 +52,9 @@ export default function App() {
                     <Route
                         path="/admin-dashboard"
                         element={
-                            <ProtectedRoute>
+                            // <ProtectedRoute>
                                 <Admin />
-                            </ProtectedRoute>
+                            // </ProtectedRoute>
                         }
                     />
                 </Routes>

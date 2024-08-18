@@ -17,6 +17,20 @@ export default {
       '3xl': '1.953rem',
       '4xl': '2.441rem',
       '5xl': '3.052rem',
+    },
+    keyframes: {
+      'grow-line': {
+        '0%': { transform: 'scaleX(0)' },
+        '50%': { transform: 'scaleX(1)' },
+        '100%': { transform: 'scaleX(0)' },
+      },
+    },
+    animation: {
+      'grow-line': 'grow-line 2s ease-in-out infinite',
+    },
+    transformOrigin: {
+      '0': '0%',
+      '100': '100%',
     }
   },
   plugins: [],

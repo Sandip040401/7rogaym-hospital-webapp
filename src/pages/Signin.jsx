@@ -11,6 +11,7 @@ const SignIn = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const [otp, setOtp] = useState('');
@@ -226,44 +227,62 @@ const SignIn = () => {
                       </button>
                     </>
                   ) : (
-                    <form onSubmit={handleChangePassword} className="mt-6">
-                      <div className="mb-6">
-                        <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">
-                          New Password
-                        </label>
-                        <input
-                          type="password"
-                          id="newPassword"
-                          name="newPassword"
-                          value={passwordData.newPassword}
-                         
-                          onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                          className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                          required
-                        />
-                      </div>
-                      <div className="mb-6">
-                        <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                          Confirm Password
-                        </label>
-                        <input
-                          type="password"
-                          id="confirmPassword"
-                          name="confirmPassword"
-                          value={passwordData.confirmPassword}
-                          onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                          className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                          required
-                        />
-                      </div>
-                      <button
-                        type="submit"
-                        className="w-full py-3 px-6 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75 transition duration-150"
-                        disabled={isSubmitting}
-                      >
-                        {isSubmitting ? 'Changing Password...' : 'Change Password'}
-                      </button>
-                    </form>
+<form onSubmit={handleChangePassword} className="mt-6">
+  <div className="mb-6">
+    <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">
+      New Password
+    </label>
+    <div className="relative">
+      <input
+        type={showPassword ? 'text' : 'password'}
+        id="newPassword"
+        name="newPassword"
+        value={passwordData.newPassword}
+        onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+        className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+        required
+      />
+      <button
+        type="button"
+        onClick={() => setShowPassword(!showPassword)}
+        className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-500 focus:outline-none"
+      >
+        {showPassword ? <FaEyeSlash /> : <FaEye />}
+      </button>
+    </div>
+  </div>
+  <div className="mb-6">
+    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+      Confirm Password
+    </label>
+    <div className="relative">
+      <input
+        type={showConfirmPassword ? 'text' : 'password'}
+        id="confirmPassword"
+        name="confirmPassword"
+        value={passwordData.confirmPassword}
+        onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+        className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+        required
+      />
+      <button
+        type="button"
+        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+        className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-500 focus:outline-none"
+      >
+        {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+      </button>
+    </div>
+  </div>
+  <button
+    type="submit"
+    className="w-full py-3 px-6 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75 transition duration-150"
+    disabled={isSubmitting}
+  >
+    {isSubmitting ? 'Changing Password...' : 'Change Password'}
+  </button>
+</form>
+
                   )}
                 </>
               )}

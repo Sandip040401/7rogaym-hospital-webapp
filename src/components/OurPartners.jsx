@@ -67,7 +67,7 @@ export const OurPartners = () => {
                     modules={[Navigation, Pagination, Autoplay]}
                     loop={true}
                     speed={500}
-                    pagination={{ clickable: true }}
+                    // pagination={{ clickable: true }}
                     centeredSlides={true}
                     grabCursor={true}
                     slidesPerView={3}
@@ -105,8 +105,6 @@ export const OurPartners = () => {
                         </SwiperSlide>
                     ))}
                 </Swiper>
-                <div ref={prevRef} className="h-16 custom-swiper-button-prev swiper-button-prev text-white absolute top-1/2 left-2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 p-2 rounded-full cursor-pointer hover:bg-opacity-75 transition duration-300 shadow-lg"></div>
-                <div ref={nextRef} className="h-16 custom-swiper-button-next swiper-button-next text-white absolute top-1/2 right-2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 p-2 rounded-full cursor-pointer hover:bg-opacity-75 transition duration-300 shadow-lg"></div>
             </div>
             <div className="flex justify-center mt-6">
                 <Link to="/hospitals">
