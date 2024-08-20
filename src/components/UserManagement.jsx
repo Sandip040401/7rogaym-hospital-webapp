@@ -1,248 +1,118 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
-import HealthCard from './HealthCard';
-import PremiumHealthCard from './PremiumHealthCard';
-import BackCard from './BackCard';
+import UserDetailsPopup from '../components/UserDetailsPopup';
 
 const UserManagement = ({ baseUrl, token }) => {
   const [users, setUsers] = useState([]);
-  const [editingUser, setEditingUser] = useState(null);
-  const [subscriptionStatus, setSubscriptionStatus] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
   const [healthCards, setHealthCards] = useState([]);
-  const [showHealthCards, setShowHealthCards] = useState(false);
-  const [loadingUsers, setLoadingUsers] = useState(true);
-  const [loadingCards, setLoadingCards] = useState(false);
-  const [alert, setAlert] = useState({ type: '', message: '', visible: false });
-  const cardRefs = useRef([]);
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(`${baseUrl}/api/admin`, {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         setUsers(response.data);
       } catch (error) {
-        setAlert({ type: 'error', message: 'no users in backend', visible: true });
-      } finally {
-        setLoadingUsers(false);
+        console.error('Error fetching users', error);
       }
     };
-
     fetchUsers();
   }, [baseUrl, token]);
 
-  useEffect(() => {
-    if (selectedUser) {
-      setLoadingCards(true);
-      const fetchHealthCards = async () => {
-        try {
-          const response = await axios.get(`${baseUrl}/api/admin/users/${selectedUser.email}/members`, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
-          setHealthCards(response.data);
-        } catch (error) {
-          setAlert({ type: 'error', message: 'No health cards found', visible: true });
-        } finally {
-          setLoadingCards(false);
-        }
-      };
-
-      fetchHealthCards();
-    }
-  }, [selectedUser, baseUrl, token]);
-
-  const handleEdit = (user) => {
-    setEditingUser(user.email);
-    setSubscriptionStatus(user.subscriptionStatus);
+  const handleEdit = async (user) => {
     setSelectedUser(user);
+    try {
+      const response = await axios.get(`${baseUrl}/api/admin/users/${user.email}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setHealthCards(response.data.healthCards || []);
+      setShowPopup(true);
+    } catch (error) {
+      console.error('Error fetching health cards', error);
+    }
   };
 
-  const handleSave = async (email) => {
+  const handleClosePopup = () => {
+    setShowPopup(false);
+    setSelectedUser(null);
+    setHealthCards([]);
+  };
+
+  const handleInputChange = (updatedUser) => {
+    setSelectedUser(updatedUser);
+  };
+
+  const handleSave = async () => {
     try {
       await axios.put(
-        `${baseUrl}/api/admin/${email}`,
-        { subscriptionStatus },
+        `${baseUrl}/api/admin/users/${selectedUser.email}`,
+        selectedUser,
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
-      setUsers(
-        users.map((user) =>
-          user.email === email ? { ...user, subscriptionStatus } : user
-        )
-      );
-      setEditingUser(null);
-      setAlert({ type: 'success', message: 'Subscription status updated successfully', visible: true });
+      setShowPopup(false);
+      // Refresh users after save
+      const response = await axios.get(`${baseUrl}/api/admin`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUsers(response.data);
     } catch (error) {
-      setAlert({ type: 'error', message: 'Failed to update subscription status', visible: true });
+      console.error('Error saving user details', error);
     }
   };
-
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
-  const handleDownload = async () => {
-    const scale = 6;
-
-    for (let index = 0; index < healthCards.length; index++) {
-      const cardElement = cardRefs.current[index];
-
-      await document.fonts.ready;
-      const canvas = await html2canvas(cardElement, {
-        scale: scale,
-        useCORS: true,
-        allowTaint: true,
-      });
-
-      const imgData = canvas.toDataURL('image/png');
-      const imgWidth = canvas.width / scale;
-      const imgHeight = canvas.height / scale;
-
-      const pdf = new jsPDF({
-        orientation: 'landscape',
-        unit: 'pt',
-        format: [imgWidth, imgHeight],
-      });
-
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
-      pdf.save(`${healthCards[index].name}_card.pdf`);
-    }
-  };
-
-  if (loadingUsers) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div>
-      {alert.visible && (
-        <div className={`mb-4 p-4 text-white rounded ${alert.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
-          {alert.message}
-        </div>
-      )}
-      <div className="overflow-x-auto overflow-y-auto max-h-80 mb-4">
-        <table className="min-w-full bg-white border border-gray-200">
-          <thead>
-            <tr>
-              {['Name', 'Email', 'Phone Number', 'Subscription Status', 'Selected Plan', 'Last Payment Date', 'Last Payment Amount', 'Address', 'Birth Year', 'City', 'Gender', 'Pincode', 'State', 'Actions'].map((header) => (
-                <th key={header} className="py-2 px-4 border-b text-left">{header}</th>
-              ))}
+      <table className="min-w-full bg-white border border-gray-200">
+        <thead>
+          <tr>
+            <th className="py-2 px-4 border-b text-left">Name</th>
+            <th className="py-2 px-4 border-b text-left">Email</th>
+            <th className="py-2 px-4 border-b text-left">Phone Number</th>
+            <th className="py-2 px-4 border-b text-left">Subscription Status</th>
+            <th className="py-2 px-4 border-b text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user) => (
+            <tr key={user.email} className="hover:bg-gray-100 transition duration-150">
+              <td className="py-2 px-4 border-b">{user.name}</td>
+              <td className="py-2 px-4 border-b">{user.email}</td>
+              <td className="py-2 px-4 border-b">{user.phoneNumber}</td>
+              <td className="py-2 px-4 border-b">{user.subscriptionStatus}</td>
+              <td className="py-2 px-4 border-b">
+                <button
+                  onClick={() => handleEdit(user)}
+                  className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700 transition duration-150"
+                >
+                  Edit
+                </button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.email} className="hover:bg-gray-100 transition duration-150">
-                <td className="py-2 px-4 border-b">{user.name || 'N/A'}</td>
-                <td className="py-2 px-4 border-b">{user.email}</td>
-                <td className="py-2 px-4 border-b">{user.phoneNumber || 'N/A'}</td>
-                <td className="py-2 px-4 border-b">
-                  {editingUser === user.email ? (
-                    <select
-                      value={subscriptionStatus}
-                      onChange={(e) => setSubscriptionStatus(e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded"
-                    >
-                      <option value="active">active</option>
-                      <option value="Inactive">Inactive</option>
-                    </select>
-                  ) : (
-                    user.subscriptionStatus || 'N/A'
-                  )}
-                </td>
-                <td className="py-2 px-4 border-b">{user.selectedPlan || 'N/A'}</td>
-                <td className="py-2 px-4 border-b">{user.lastPaymentDate ? formatDate(user.lastPaymentDate) : 'N/A'}</td>
-                <td className="py-2 px-4 border-b">{user.lastPaymentAmount || 'N/A'}</td>
-                <td className="py-2 px-4 border-b">{user.address || 'N/A'}</td>
-                <td className="py-2 px-4 border-b">{user.birthYear || 'N/A'}</td>
-                <td className="py-2 px-4 border-b">{user.city || 'N/A'}</td>
-                <td className="py-2 px-4 border-b">{user.gender || 'N/A'}</td>
-                <td className="py-2 px-4 border-b">{user.pincode || 'N/A'}</td>
-                <td className="py-2 px-4 border-b">{user.state || 'N/A'}</td>
-                <td className="py-2 px-4 border-b">
-                  {editingUser === user.email ? (
-                    <div className='flex'>
-                      <button
-                        onClick={() => handleSave(user.email)}
-                        className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-700 transition duration-150"
-                      >
-                        Save
-                      </button>
-                      <button
-                        onClick={() => setEditingUser(null)}
-                        className="bg-gray-500 text-white px-2 py-1 rounded ml-2 hover:bg-gray-700 transition duration-150"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => handleEdit(user)}
-                      className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700 transition duration-150"
-                    >
-                      Edit
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {selectedUser && (
-        <div className="mt-6">
-          <div className="flex items-center mb-4">
-            <h2 className="text-xl font-bold mr-4">Health Cards for {selectedUser.name}</h2>
-            <button
-              onClick={() => setShowHealthCards(!showHealthCards)}
-              className={`px-4 py-2 rounded transition duration-150 ${showHealthCards ? 'bg-red-500 text-white hover:bg-red-700' : 'bg-blue-500 text-white hover:bg-blue-700'}`}
-            >
-              {showHealthCards ? 'Hide Cards' : 'Show Cards'}
-            </button>
-            {showHealthCards && (
-              <button
-                onClick={handleDownload}
-                className="ml-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-150"
-              >
-                Download Cards
-              </button>
-            )}
-          </div>
-          {showHealthCards && (
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              {loadingCards ? (
-                <div>Loading health cards...</div>
-              ) : (
-                healthCards.map((member, index) => (
-                  <div key={member._id} ref={(el) => (cardRefs.current[index] = el)} className="mb-6" id={`card-${member._id}`}>
-                    {selectedUser.selectedPlan.includes('Solo') ? (
-                      <div className='flex'>
-                        <PremiumHealthCard member={member} />
-                        <BackCard member={member} />
-                      </div>
-                    ) : (
-                      <div className='flex'>
-                        <HealthCard member={member} />
-                        <BackCard member={member} />
-                      </div>
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
-          )}
-        </div>
+          ))}
+        </tbody>
+      </table>
+
+      {showPopup && selectedUser && (
+        <UserDetailsPopup
+          user={selectedUser}
+          healthCards={healthCards}
+          onClose={handleClosePopup}
+          onChange={handleInputChange}
+          onSave={handleSave}
+        />
       )}
     </div>
   );

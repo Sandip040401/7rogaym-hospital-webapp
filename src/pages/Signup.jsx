@@ -320,40 +320,40 @@ export default function Signup() {
             {passwordStrength.text}
         </p>
     )}
-</div>
+                    </div>
 
-<div className="relative mt-4">
-    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-        Confirm Password
-    </label>
-    <div className="flex items-center border border-gray-300 rounded-md shadow-sm">
-        <input
-            type={showConfirmPassword ? 'text' : 'password'}
-            id="confirmPassword"
-            name="confirmPassword"
-            placeholder='Confirm password'
-            value={form.confirmPassword}
-            onChange={handleChange}
-            className="flex-1 px-3 py-2 mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            disabled={!otpVerified}
-        />
-        {otpVerified && (
-            <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="flex items-center px-3 py-2 text-gray-500 focus:outline-none"
-            >
-                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-            </button>
-        )}
-    </div>
-    {!passwordsMatch && form.password && form.confirmPassword && (
-        <p className="mt-1 text-sm font-medium text-red-500">Passwords do not match</p>
-    )}
-    {passwordsMatch && form.password && form.confirmPassword && (
-        <p className="mt-1 text-sm font-medium text-green-500">Passwords match</p>
-    )}
-</div>
+                    <div className="relative mt-4">
+                        <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                            Confirm Password
+                        </label>
+                        <div className="flex items-center border border-gray-300 rounded-md shadow-sm">
+                            <input
+                                type={showConfirmPassword ? 'text' : 'password'}
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                placeholder='Confirm password'
+                                value={form.confirmPassword}
+                                onChange={handleChange}
+                                className="flex-1 px-3 py-2 mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                                disabled={!otpVerified}
+                            />
+                            {otpVerified && (
+                                <button
+                                    type="button"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    className="flex items-center px-3 py-2 text-gray-500 focus:outline-none"
+                                >
+                                    {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                                </button>
+                            )}
+                        </div>
+                        {!passwordsMatch && form.password && form.confirmPassword && (
+                            <p className="mt-1 text-sm font-medium text-red-500">Passwords do not match</p>
+                        )}
+                        {passwordsMatch && form.password && form.confirmPassword && (
+                            <p className="mt-1 text-sm font-medium text-green-500">Passwords match</p>
+                        )}
+                    </div>
 
                     <div>
                         <button

@@ -104,7 +104,7 @@ export const Footer = () => {
                         <p className="mb-2 text-gray-400">CIN: U85320MP2023PTC064383</p>
                         <p className="mb-2 text-gray-400">GST: 23AACCZ1326M1ZB</p>
                         <p className="mb-2 text-gray-400">Gx 14, Varun Nagar, Kolar Road, Bhopal, Madhya Pradesh 462042</p>
-                        <p className="mb-2 text-gray-400">Phone: <a href="tel:9201989710" className="text-yellow-500">8181819718</a></p>
+                        <p className="mb-2 text-gray-400">Phone: <a href="tel:8181819718" className="text-yellow-500">8181819718</a></p>
                         <p className="mb-2 text-gray-400">Email: <a href="mailto:Contact@7Rogyam.com" className="text-yellow-500">Contact@7Rogyam.com</a></p>
                         <div className="mt-4">
                             <Link to="/tnc" className="text-yellow-500 hover:text-white transition duration-300">Terms & Conditions</Link>
