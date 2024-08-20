@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 export const Gallery = () => {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchPhotos = async () => {
@@ -13,7 +12,7 @@ export const Gallery = () => {
         const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/gallery`);
         setPhotos(response.data);
       } catch (error) {
-        toast.error('Failed to fetch photos');
+        setError('Failed to fetch photos');
       } finally {
         setLoading(false);
       }
@@ -39,6 +38,10 @@ export const Gallery = () => {
             <div className="flex justify-center items-center h-64">
               <div className="w-16 h-16 border-4 border-t-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
             </div>
+          ) : error ? (
+            <div className="text-center text-red-500 text-xl">
+              {error}
+            </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-8">
               {photos.length > 0 ? (
@@ -59,7 +62,6 @@ export const Gallery = () => {
               )}
             </div>
           )}
-          <ToastContainer />
         </div>
       </div>
     </>
