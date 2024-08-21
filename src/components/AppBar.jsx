@@ -27,7 +27,7 @@ export const AppBar = () => {
     };
 
     return (
-        <div className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-1 lg:px-20 bg-white bg-opacity-60 backdrop-blur-sm">
+        <div className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center lg:px-20 bg-white bg-opacity-60 backdrop-blur-sm">
             <Link to="/">
                 <div className="flex items-center">
                     <img className="h-14 mix-blend-multiply" src="/logo1-new.png" alt="Logo 1" />

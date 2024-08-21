@@ -18,10 +18,10 @@ export const HowitWorks = () => {
                     <div className="flex justify-center md:justify-start items-center text-lg">
                         <p className="bg-white p-6 rounded-lg shadow-lg">
                             <span className="text-xl font-bold text-emerald-600">Becoming a member</span> is 
-                            <span className="text-xl font-bold">super easy</span> and
-                             <span className="text-xl font-bold">affordable</span>. 
+                            <span className="text-xl font-bold"> super easy</span> and
+                             <span className="text-xl font-bold"> affordable</span>. 
                              Simply visit our registration page and provide us with some basic information or you can just ask one of our
-                              <span className="text-xl font-bold text-emerald-600">field executives</span>.&nbsp;
+                              <span className="text-xl font-bold text-emerald-600"> field executives</span>.&nbsp;
                                <a href="/plans">
                                <button type="button" className="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-2.5 text-center me-4 mb-2">
                                 Join now
