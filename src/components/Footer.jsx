@@ -118,7 +118,7 @@ export const Footer = () => {
                                     <FaWhatsapp className="text-green-500 mr-2 text-2xl" />
                                     <p className="text-gray-500 text-xl md:text-2xl font-semibold">Whatsapp:</p>
                                 </div>
-                                <a href="https://wa.me/8181819718" className="text-black text-xl md:text-2xl font-semibold hover:text-slate-500">8181819718</a>
+                                <a href="https://wa.me/918181819718" className="text-black text-xl md:text-2xl font-semibold hover:text-slate-500">8181819718</a>
                                 <div className="flex items-center">
                                     <FaPhoneAlt className="text-blue-500 mr-2 text-2xl" />
                                     <p className="text-gray-500 text-xl md:text-2xl font-semibold">Phone:</p>
