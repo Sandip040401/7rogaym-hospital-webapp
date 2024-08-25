@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
@@ -33,15 +33,59 @@ const UserForm = () => {
   const [additionalMembers, setAdditionalMembers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState({ message: '', type: '' });
+  const [restricted, setRestricted] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
-
+  
   const { planName, amount } = location.state?.planDetails || { planName: '', amount: 0 };
 
   const maxMembers = planMemberLimits[planName] || 0;
   const totalMembers = 1 + additionalMembers.length;
   const remainingMembers = maxMembers - totalMembers;
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const tokenString = localStorage.getItem('token');
+      if (!tokenString) {
+        setAlert({ type: 'error', message: 'No token found' });
+        setRestricted(true);
+        return;
+      }
+      const decodedToken = JSON.parse(tokenString);
+      const userEmail = decodedToken.email;
+
+      setLoading(true);
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/users`, {
+          params: { email: userEmail }
+        });
+        const user = response.data;
+        setFormData({
+          name: user.name || '',
+          emergencyNumber: user.emergencyNumber || '',
+          age: user.age || '',
+          fatherName: user.fatherName || '',
+          bloodGroup: user.bloodGroup || '',
+          gender: user.gender || '',
+          village: user.village || '',
+          tehsil: user.tehsil || '',
+          district: user.district || '',
+          state: user.state || '',
+          allergies: user.allergies || '',
+          preExistingIllness: user.preExistingIllness || '',
+          abhaId: user.abhaId || '',
+          photo: null,
+        });
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        setAlert({ type: 'error', message: 'Error fetching user data' });
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleFormChange = ({ target: { name, value, files } }) => {
     setFormData(prev => ({ ...prev, [name]: files ? files[0] : value }));
@@ -164,28 +208,32 @@ const UserForm = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
               >
-                <title>Close</title>
-                <path d="M14.348 5.652a.5.5 0 10-.707-.707l-3.641 3.641-3.641-3.641a.5.5 0 10-.707.707l3.641 3.641-3.641 3.641a.5.5 0 10.707.707l3.641-3.641 3.641 3.641a.5.5 0 10.707-.707l-3.641-3.641 3.641-3.641z" />
+                <path d="M14.348 5.652a.6.6 0 010 .849L10.707 10l3.641 3.498a.6.6 0 01-.848.849L10 10.707l-3.498 3.641a.6.6 0 01-.849-.848L9.293 10 5.652 6.352a.6.6 0 01.849-.849L10 9.293l3.641-3.498a.6.6 0 01.707-.143.6.6 0 01.707.143z" />
               </svg>
             </button>
           </div>
         )}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+        {restricted ? (
+          <p className="text-red-600 text-center">
+            Access Denied: You need to sign in to fill out the form.
+          </p>
+        ) : (
+          <form onSubmit={handleSubmit} encType="multipart/form-data">
             {formFields.map(({ label, name, type, placeholder, options }) => (
-              <div key={name}>
-                <label className="block mb-1 text-gray-600" htmlFor={name}>
+              <div key={name} className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
                   {label}
                 </label>
                 {type === 'select' ? (
                   <select
-                    className="w-full border border-gray-300 p-2 rounded"
-                    id={name}
                     name={name}
                     value={formData[name]}
                     onChange={handleFormChange}
+                    className="form-select w-full border border-gray-300 p-2 rounded-md"
+                    required
                   >
-                    <option value="">{placeholder}</option>
+                    <option value="">Select {label}</option>
                     {options.map(option => (
                       <option key={option} value={option}>
                         {option}
@@ -194,47 +242,37 @@ const UserForm = () => {
                   </select>
                 ) : (
                   <input
-                    className="w-full border border-gray-300 p-2 rounded"
                     type={type}
-                    id={name}
                     name={name}
-                    placeholder={placeholder}
                     value={type !== 'file' ? formData[name] : undefined}
                     onChange={handleFormChange}
+                    placeholder={placeholder}
+                    className="form-input w-full border border-gray-300 p-2 rounded-md"
+                    required
                   />
                 )}
               </div>
             ))}
-          </div>
-          <div className="mt-6">
-            <h3 className="text-xl font-semibold mb-4">Additional Members</h3>
-            <button
-              type="button"
-              onClick={handleAddMember}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              Add Member
-            </button>
-            <p className="mt-2 text-gray-600">
-              You can add {remainingMembers} more member{remainingMembers > 1 ? 's' : ''}.
-            </p>
+
             {additionalMembers.map((member, index) => (
-              <div key={index} className="mt-4 p-4 bg-gray-50 rounded border border-gray-300">
-                <h4 className="text-lg font-semibold mb-2">Member {index + 1}</h4>
+              <div key={index} className="mb-4 border-t-2 pt-4">
+                <h3 className="text-lg font-semibold mb-2">
+                  Additional Member {index + 1}
+                </h3>
                 {additionalMemberFields.map(({ label, name, type, placeholder, options }) => (
-                  <div key={name} className="mb-2">
-                    <label className="block mb-1 text-gray-600" htmlFor={`${name}-${index}`}>
+                  <div key={name} className="mb-4">
+                    <label className="block text-gray-700 text-sm font-bold mb-2">
                       {label}
                     </label>
                     {type === 'select' ? (
                       <select
-                        className="w-full border border-gray-300 p-2 rounded"
-                        id={`${name}-${index}`}
                         name={name}
                         value={member[name]}
-                        onChange={(e) => handleAdditionalMemberChange(index, e)}
+                        onChange={e => handleAdditionalMemberChange(index, e)}
+                        className="form-select w-full border border-gray-300 p-2 rounded-md"
+                        required
                       >
-                        <option value="">{placeholder}</option>
+                        <option value="">Select {label}</option>
                         {options.map(option => (
                           <option key={option} value={option}>
                             {option}
@@ -243,30 +281,39 @@ const UserForm = () => {
                       </select>
                     ) : (
                       <input
-                        className="w-full border border-gray-300 p-2 rounded"
                         type={type}
-                        id={`${name}-${index}`}
                         name={name}
-                        placeholder={placeholder}
                         value={member[name]}
-                        onChange={(e) => handleAdditionalMemberChange(index, e)}
+                        onChange={e => handleAdditionalMemberChange(index, e)}
+                        placeholder={placeholder}
+                        className="form-input w-full border border-gray-300 p-2 rounded-md"
+                        required
                       />
                     )}
                   </div>
                 ))}
               </div>
             ))}
-          </div>
-          <div className="mt-6 text-center">
+
+            {remainingMembers > 0 && (
+              <button
+                type="button"
+                onClick={handleAddMember}
+                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+              >
+                Add Additional Member
+              </button>
+            )}
+
             <button
               type="submit"
-              className="bg-green-500 text-white px-6 py-3 rounded"
+              className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 mt-6"
               disabled={loading}
             >
-              {loading ? 'Submitting...' : 'Submit'}
+              Submit
             </button>
-          </div>
-        </form>
+          </form>
+        )}
       </div>
     </div>
   );

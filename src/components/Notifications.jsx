@@ -17,12 +17,14 @@ const Notifications = () => {
   });
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState({ type: '', message: '' });
+  const [restricted, setRestricted] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
       const tokenString = localStorage.getItem('token');
       if (!tokenString) {
         setAlert({ type: 'error', message: 'No token found' });
+        setRestricted(true);
         return;
       }
       const decodedToken = JSON.parse(tokenString);
@@ -136,6 +138,11 @@ const Notifications = () => {
       setAlert({ type: 'error', message: 'Failed to change password' });
     }
   };
+  if (restricted) {
+    return <div className='flex justify-center text-3xl text-red-500 font-bold'>
+      Restricted Access
+      </div>;
+  }
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">

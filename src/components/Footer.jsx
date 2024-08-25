@@ -41,7 +41,7 @@ export const Footer = () => {
     };
 
     return (
-        <footer className="bg-gradient-to-r from-teal-100 to-cyan-100 text-white py-10 px-6 lg:px-20" id="contact">
+        <footer className="bg-gradient-to-r from-teal-100 to-cyan-100 text-white pt-10 px-6 lg:px-20" id="contact">
             <div className="container mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-36">
 
@@ -174,9 +174,10 @@ export const Footer = () => {
                         </div>
                     </div>
                     </div>
-                    <div className="text-center mt-10">
-                    <p style={{ color: 'black', textShadow: '2px 2px 6px rgba(255, 255, 255, 0.6)' }}>
-                        © 2024 7Rogyam Healthcare. All rights reserved.
+                    <div className="justify-center mt-16 flex pb-4">
+
+                    <p className='flex' style={{ color: 'black', textShadow: '2px 2px 6px rgba(255, 255, 255, 0.6)' }}>
+                        2024 <img src="/7r.png" alt="" srcset="" className='h-4 mt-1 pl-1' />ogyam Healthcare. All rights reserved.
                     </p>
                     </div>
 

@@ -5,6 +5,8 @@ import jsPDF from 'jspdf';
 import HealthCard from './HealthCard';
 import PremiumHealthCard from './PremiumHealthCard';
 import BackCard from './BackCard';
+import Plans from './Plans';
+import UserForm from '../pages/UserForm';
 
 const initialFormState = {
   name: '',
@@ -34,11 +36,16 @@ const ManageCard = () => {
   const [key, setKey] = useState(0);
   const [loading, setLoading] = useState(false); // Loading state
   const [alert, setAlert] = useState({ message: '', type: '' }); // Alert state
+  const [restricted, setRestricted] = useState(false);
+  const [active, setActive] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
       const token = localStorage.getItem('token');
-      if (!token) return;
+      if (!token) {
+        setRestricted(true);
+      return;
+      }
 
       const { email } = JSON.parse(token);
       setLoading(true);
@@ -47,6 +54,9 @@ const ManageCard = () => {
           axios.get(`${import.meta.env.VITE_BASE_URL}/api/users`, { params: { email }, headers: { Authorization: `Bearer ${token}` } }),
           axios.get(`${import.meta.env.VITE_BASE_URL}/api/members`, { params: { email }, headers: { Authorization: `Bearer ${token}` } }),
         ]);
+        if(planResponse.data.subscriptionStatus == 'inactive'){
+          setActive(true);
+        }
         setPlanDetails({ planName: planResponse.data.selectedPlan, amount: planResponse.data.lastPaymentAmount });
         setMembers(membersResponse.data);
         console.log(membersResponse.data);
@@ -214,6 +224,19 @@ const ManageCard = () => {
   const totalMembers = members.length + additionalMembers.length;
   const remainingMembers = maxMembers - totalMembers;
 
+
+  if (restricted) {
+    return <div className='flex justify-center text-3xl text-red-500 font-bold'>
+      Restricted Access
+      </div>;
+  }
+
+  if (active) {
+    return <div>
+      <Plans/>
+    </div>
+  }
+
   return (
 
     <div key={key} className="min-h-screen bg-gray-100 py-8">
@@ -324,12 +347,6 @@ const ManageCard = () => {
                     </div>
                   )}
                   <div className="flex">
-                    {/* <button onClick={() => handleEditClick(index)} className="bg-yellow-500 text-white px-4 py-2 rounded mt-4 mr-2">
-                      Edit
-                    </button> */}
-                    {/* <button onClick={() => handleDelete(member._id)} className="bg-red-500 text-white px-4 py-2 rounded mt-4 mr-2">
-                      Delete
-                    </button> */}
                     <button onClick={() => handleDownloadCard(member)} className="bg-green-500 text-white px-4 py-2 rounded mt-4">
                       Download
                     </button>

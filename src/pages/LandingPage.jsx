@@ -9,6 +9,7 @@ import { OurPartners } from "../components/OurPartners";
 import PlansHome from "../components/PlansHome";
 import { Services } from "../components/Services";
 import { Gallery } from '../components/Gallery';
+import Testimonials from "../components/Testimonials";
 
 
 export default function LandingPage(){
@@ -24,6 +25,7 @@ export default function LandingPage(){
             </div>
             <PlansHome/>
             <Gallery/>
+            <Testimonials/>
             <JoinUs/>
             <AboutUs/>
             <FAQ/>

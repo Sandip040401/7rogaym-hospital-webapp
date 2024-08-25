@@ -34,7 +34,7 @@ export const AppBar = () => {
                     <img className="h-20 mix-blend-multiply" src="/newlogo-new.png" alt="Logo 2" />
                 </div>
             </Link>
-            <div className="hidden md:flex space-x-6">
+            <div className="hidden lg:flex space-x-6">
                 <a href="/" className="font-medium hover:text-blue-800 transition duration-300 cursor-pointer flex justify-center flex-col">Home</a>
                 <Link to="/hospitals" className="font-medium hover:text-blue-800 transition duration-300 cursor-pointer flex justify-center flex-col">Hospitals</Link>
                 <Link to="/plans" className="font-medium hover:text-blue-800 transition duration-300 cursor-pointer flex justify-center flex-col">Plans</Link>
@@ -58,7 +58,7 @@ export const AppBar = () => {
                     )}
                 </div>
             </div>
-            <div className="md:hidden flex items-center">
+            <div className="lg:hidden flex items-center">
                 <button className="mobile-menu-button" onClick={() => setMenuOpen(!menuOpen)}>
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>

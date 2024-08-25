@@ -5,6 +5,7 @@ export const Gallery = () => {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
     const fetchPhotos = async () => {
@@ -28,6 +29,14 @@ export const Gallery = () => {
     return btoa(binary);
   };
 
+  useEffect(() => {
+    const slideInterval = setInterval(() => {
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % photos.length);
+    }, 3000); // Adjust the timing as needed
+
+    return () => clearInterval(slideInterval);
+  }, [photos.length]);
+
   return (
     <>
       <div className="bg-gradient-to-b from-gray-100 to-gray-200 min-h-[300px] mt-10 py-20">
@@ -43,23 +52,46 @@ export const Gallery = () => {
               {error}
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-8">
-              {photos.length > 0 ? (
-                photos.map((photo) => (
+            <div className="relative w-full overflow-hidden">
+              <div
+                className="flex transition-transform duration-700 ease-in-out"
+                style={{ transform: `translateX(-${currentSlide * 20}%)` }} // Move 20% for each slide to show 5 images at a time
+              >
+                {photos.map((photo, index) => (
                   <div
                     key={photo._id}
-                    className="relative overflow-hidden rounded-lg shadow-md transform transition duration-300 hover:scale-105"
+                    className="flex-shrink-0 w-1/5 px-2" // Each image takes up 1/5th of the width
                   >
                     <img
                       src={`data:${photo.contentType};base64,${arrayBufferToBase64(photo.image.data)}`}
                       alt="Gallery"
-                      className="w-full h-48 object-cover rounded-lg"
+                      className="w-full h-[300px] object-cover rounded-lg"
                     />
                   </div>
-                ))
-              ) : (
-                <p className="col-span-full text-center text-xl text-gray-600">No photos available</p>
-              )}
+                ))}
+              </div>
+              <div className="absolute inset-0 flex justify-between items-center px-2">
+                <button
+                  className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                  onClick={() => setCurrentSlide((prevSlide) => (prevSlide === 0 ? photos.length - 5 : prevSlide - 1))}
+                >
+                  &lt;
+                </button>
+                <button
+                  className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                  onClick={() => setCurrentSlide((prevSlide) => (prevSlide + 1) % photos.length)}
+                >
+                  &gt;
+                </button>
+              </div>
+              <div className="absolute bottom-0 w-full flex justify-center gap-2 py-2">
+                {photos.map((_, index) => (
+                  <div
+                    key={index}
+                    className={`w-3 h-3 rounded-full ${currentSlide === index ? 'bg-blue-500' : 'bg-gray-300'}`}
+                  ></div>
+                ))}
+              </div>
             </div>
           )}
         </div>

@@ -85,11 +85,11 @@ export const Services = () => {
                 <span className="text-teal-500 lg:text-4xl pl-2">Services</span>
                 <span className="flex flex-col text-black justify-center pl-2">We Provide</span> 
             </div>
-            <div className="flex justify-center lg:px-48">
-                <BannerCards data={servicesData1} height="h-70 lg:h-80" width="w-40 lg:w-64" feature={true} />
+            <div className="flex justify-center lg:px-48 w-full">
+                <BannerCards data={servicesData1} height="h-70 lg:h-80" width="w-40 lg:w-56 xl:w-60" feature={true} />
             </div>
-            <div className="flex justify-center lg:px-48">
-                <BannerCards data={servicesData2} height="h-70 lg:h-80" width="w-40 lg:w-64" feature={true} />
+            <div className="flex justify-center lg:px-48 w-full">
+                <BannerCards data={servicesData2} height="h-70 lg:h-80" width="w-40 lg:w-56 xl:w-60" feature={true} />
             </div>
             <div className="flex justify-center pt-14">
                 <button 

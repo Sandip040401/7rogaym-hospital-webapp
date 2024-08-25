@@ -1,19 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/swiper-bundle.css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/autoplay';
-
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
 import { Link } from 'react-router-dom';
 import { HospitalCard } from './HospitalCard';
 
 export const OurPartners = () => {
     const [hospitals, setHospitals] = useState([]);
-    const prevRef = useRef(null);
-    const nextRef = useRef(null);
 
     useEffect(() => {
         const fetchHospitals = async () => {
@@ -50,12 +43,24 @@ export const OurPartners = () => {
         fetchHospitals();
     }, []);
 
-    useEffect(() => {
-        if (prevRef.current && nextRef.current) {
-            prevRef.current.swiper.update();
-            nextRef.current.swiper.update();
+    const responsive = {
+        superLargeDesktop: {
+            breakpoint: { max: 4000, min: 1280 },
+            items: 3
+        },
+        desktop: {
+            breakpoint: { max: 1280, min: 1024 },
+            items: 2
+        },
+        tablet: {
+            breakpoint: { max: 1024, min: 768 },
+            items: 2
+        },
+        mobile: {
+            breakpoint: { max: 768, min: 0 },
+            items: 1
         }
-    }, [prevRef, nextRef]);
+    };
 
     return (
         <div className="h-full w-full bg-gradient-to-r from-cyan-700 to-teal-500 py-6 pb-14">
@@ -69,59 +74,30 @@ export const OurPartners = () => {
             </div>
             <div className="lg:ml-10 lg:px-10 px-2 mt-12 md:px-12 relative">
                 {hospitals.length > 0 && (
-                    <Swiper
-                        className='lg:ml-8 rounded-3xl'
-                        modules={[Navigation, Pagination, Autoplay]}
-                        loop={true}
-                        speed={500}
-                        centeredSlides={true}
-                        grabCursor={true}
-                        autoplay={{
-                            delay: 2000,
-                            disableOnInteraction: false
-                        }}
-                        navigation={{
-                            prevEl: prevRef.current,
-                            nextEl: nextRef.current
-                        }}
-                        onBeforeInit={(swiper) => {
-                            swiper.params.navigation.prevEl = prevRef.current;
-                            swiper.params.navigation.nextEl = nextRef.current;
-                        }}
-                        breakpoints={{
-                            320: {
-                                slidesPerView: 1,
-                                spaceBetween: 10,
-                            },
-                            640: {
-                                slidesPerView: 1,
-                                spaceBetween: 20,
-                            },
-                            768: {
-                                slidesPerView: 2,
-                                spaceBetween: 20,
-                            },
-                            1024: {
-                                slidesPerView: 2,
-                                spaceBetween: 30,
-                            },
-                            1280: {
-                                slidesPerView: 3,
-                                spaceBetween: 40,
-                            },
-                        }}
+                    <Carousel
+                        responsive={responsive}
+                        ssr={true}
+                        infinite={true}
+                        autoPlay={true}
+                        autoPlaySpeed={2000}
+                        keyBoardControl={true}
+                        customTransition="transform 300ms ease-in-out"
+                        transitionDuration={300}
+                        itemClass="carousel-item-padding-40-px"
+                        pauseOnHover={false}  // Disable pause on hover
+                        arrows={false}       // Disable navigation arrows
                     >
                         {hospitals.map((hospital, index) => (
-                            <SwiperSlide key={index}>
+                            <div key={index} className="lg:ml-8 rounded-3xl">
                                 <HospitalCard hospital={hospital} className="h-full" />
-                            </SwiperSlide>
+                            </div>
                         ))}
-                    </Swiper>
+                    </Carousel>
                 )}
             </div>
             <div className="flex justify-center mt-6">
                 <Link to="/hospitals">
-                    <button className="bg-teal-600 text-xl text-white px-4 py-2 text-sm rounded-md hover:bg-teal-700 transition duration-300 shadow-lg">
+                    <button className="bg-teal-600 text-xl text-white px-4 py-2 text-sm md:text-base rounded-md hover:bg-teal-700 transition duration-300 shadow-lg">
                         Show More
                     </button>
                 </Link>

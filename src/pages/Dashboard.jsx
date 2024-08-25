@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Home from '../components/Home';
 import ManageCard from '../components/ManageCard';
 import Notifications from '../components/Notifications';
 import Plans from '../components/Plans';
+import { Profile } from '../components/Profile';
 
 export default function Dashboard() {
     // Set 'managecard' as the default selected item
-    const [selectedItem, setSelectedItem] = useState('managecard');
+    const [selectedItem, setSelectedItem] = useState('profile');
     const { logout } = useAuth();
     const navigate = useNavigate();
+    const [restricted, setRestricted] = useState(false);
 
     const handleLogout = () => {
         console.log('Logout clicked');
@@ -19,8 +21,22 @@ export default function Dashboard() {
         navigate('/');
     };
 
+    useEffect(() => {
+        const fetchUserData = async () => {
+          const tokenString = localStorage.getItem('token');
+          if (!tokenString) {
+            setRestricted(true);
+            return;
+          }
+        };
+    
+        fetchUserData();
+      }, []);
+
     const renderContent = () => {
         switch (selectedItem) {
+            case 'profile':
+                return <Profile/>;
             case 'managecard':
                 return <ManageCard />;
             case 'notifications':
@@ -31,9 +47,20 @@ export default function Dashboard() {
                 handleLogout();
                 return null;
             default:
-                return <ManageCard />;
+                return <Profile />;
         }
     };
+
+    if (restricted) {
+        return<>
+        <div className='flex justify-center text-3xl text-red-500 font-bold pt-60'>
+          Restricted Access
+          </div>
+          <div className='flex justify-center text-xl font-bold'>
+            <a href="/" className='text-blue-500 pointer' >click here </a>&nbsp;to go to Home Page
+          </div>
+        </> 
+      }
 
     return (
         <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
@@ -43,9 +70,10 @@ export default function Dashboard() {
                 </div>
                 <ul className="mt-4">
                     {[
+                        { id: 'profile', label: 'Profile' },
                         { id: 'managecard', label: 'Manage Card' },
                         { id: 'notifications', label: 'Settings' },
-                        { id: 'plans', label: 'Renew Plans' },
+                        // { id: 'plans', label: 'Renew Plans' },
                         { id: 'logout', label: 'Logout', action: handleLogout },
                     ].map((item) => (
                         <li key={item.id} className={`px-6 py-2 hover:bg-gray-200 ${selectedItem === item.id ? 'bg-gray-200' : ''}`}>
